@@ -7,9 +7,17 @@ Clone and edit the [NodeMCU firmware](https://github.com/nodemcu/nodemcu-firmwar
 
 ## Target audience
 I see 3 types of NodeMCU developers:
-- "application developers" who just need a ready-made firmware. If you're one of them I created configurable [cloud build service](http://frightanic.com/nodemcu-custom-build/index.php) for you.
-- NodeMCU firmware developers who commit or contribute to the project on GitHub. They need their own full fledged [build environment with the complete tool chain](http://www.esp8266.com/wiki/doku.php?id=toolchain#how_to_setup_a_vm_to_host_your_toolchain).
-- Occasional NodeMCU hackers. You don't need full control over the complete tool chain and also don't want to setup a Linux VM if you're not on Linux anyway. _This image is exactly for you!_
+- NodeMCU "application developers"
+  
+  They just need a ready-made firmware. I created a [cloud build service](http://frightanic.com/nodemcu-custom-build/index.php) with a nice UI and configuration options for them.
+
+- Occasional NodeMCU hackers
+
+  They don't need full control over the complete tool chain and also don't want to setup a Linux VM (if they're not on Linux anyway). **This image is _exactly_ for them!**
+
+- NodeMCU firmware developers
+  
+  They commit or contribute to the project on GitHub and need their own full fledged [build environment with the complete tool chain](http://www.esp8266.com/wiki/doku.php?id=toolchain#how_to_setup_a_vm_to_host_your_toolchain). _They might also find this Docker image useful._
 
 ## Usage
 ### Install docker
