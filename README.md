@@ -20,15 +20,15 @@ I see 3 types of NodeMCU developers:
   They commit or contribute to the project on GitHub and need their own full fledged [build environment with the complete tool chain](http://www.esp8266.com/wiki/doku.php?id=toolchain#how_to_setup_a_vm_to_host_your_toolchain). _They might also find this Docker image useful._
 
 ## Usage
-### Install docker
-https://docs.docker.com/installation
+### Install Docker
+Follow the instructions at https://docs.docker.com/installation.
 
 ### Run this container with Docker
 Clone the  [NodeMCU firmware](https://github.com/nodemcu/nodemcu-firmware) repository on your machine. Start Docker and change to your firmware directory (in the Docker console). Then run:
 
 ``docker run --rm -ti -v `pwd`:/opt/nodemcu-firmware marcelstoer/nodemcu-build``
 
-Depending on the power of your system it takes anywhere between 1 and 3min until the compilation finishes. 
+Depending on the power of your system it takes anywhere between 1 and 3min until the compilation finishes. The first time you run this it takes longer because Docker needs to download the image and create a container.
 
 ### Flashing the built binary
 There are several [tools to flash the firmware](https://learn.adafruit.com/building-and-running-micropython-on-the-esp8266/flash-firmware) to the ESP8266. If you were to use [esptool](https://github.com/themadinventor/esptool) (like I do) you'd run:
