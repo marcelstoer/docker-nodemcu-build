@@ -9,7 +9,7 @@ Clone and edit the [NodeMCU firmware](https://github.com/nodemcu/nodemcu-firmwar
 I see 3 types of NodeMCU developers:
 - NodeMCU "application developers"
   
-  They just need a ready-made firmware. I created a [cloud build service](http://frightanic.com/nodemcu-custom-build/index.php) with a nice UI and configuration options for them.
+  They just need a ready-made firmware. I created a [cloud build service](http://nodemcu-build.com/index.php) with a nice UI and configuration options for them.
 
 - Occasional NodeMCU firmware hackers
 
