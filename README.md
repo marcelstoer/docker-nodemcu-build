@@ -28,6 +28,16 @@ Clone the  [NodeMCU firmware](https://github.com/nodemcu/nodemcu-firmware) repos
 
 Depending on the power of your system it takes anywhere between 1 and 3min until the compilation finishes. The first time you run this it takes longer because Docker needs to download the image and create a container.
 
+#### Output
+The two firmware files (integer and float) are created in the `bin` sub folder of your NodeMCU root directory. You will also find a mapfile in the `bin` folder with the same name as the firmware file but with a `.map` ending.
+
+#### Options
+You can pass the following optional parameters to the Docker build like so `docker run -e "<parameter>=value" -e ...`. 
+
+- `IMAGE_NAME` The default firmware file names are `nodemcu_float|integer_<branch>_<timestamp>.bin`. If you define an image name it replaces the `<branch>_<timestamp>` suffix and the full image names become `nodemcu_float|integer_<image_name>.bin`.
+- `INTEGER_ONLY` Set this to 1 if you don't need NodeMCU with floating support, cuts the build time in half.
+- `FLOAT_ONLY` Set this to 1 if you only need NodeMCU with floating support, cuts the build time in half.
+
 ### Flashing the built binary
 There are several [tools to flash the firmware](https://learn.adafruit.com/building-and-running-micropython-on-the-esp8266/flash-firmware) to the ESP8266. If you were to use [esptool](https://github.com/themadinventor/esptool) (like I do) you'd run:
 
@@ -37,4 +47,4 @@ There are several [tools to flash the firmware](https://learn.adafruit.com/build
 Thanks to [Paul Sokolovsky](http://pfalcon-oe.blogspot.com/) who created and maintains [esp-open-sdk](https://github.com/pfalcon/esp-open-sdk).
 
 ## Author
-http://frightanic.com
+[http://frightanic.com](http://frightanic.com)
