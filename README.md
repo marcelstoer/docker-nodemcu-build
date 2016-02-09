@@ -19,7 +19,7 @@ I see 3 types of NodeMCU developers:
 
 ## Usage
 ### Install Docker
-Follow the instructions at https://docs.docker.com/installation.
+Follow the instructions at https://docs.docker.com/ → 'Get Started' (orange button top right).
 
 ### Run this container with Docker
 Clone the  [NodeMCU firmware](https://github.com/nodemcu/nodemcu-firmware) repository on your machine. Start Docker and change to your firmware directory (in the Docker console). Then run:
