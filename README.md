@@ -1,7 +1,7 @@
 # Docker NodeMCU build
 [![Docker Pulls](https://img.shields.io/docker/pulls/marcelstoer/nodemcu-build.svg)](https://hub.docker.com/r/marcelstoer/nodemcu-build/) [![Docker Stars](https://img.shields.io/docker/stars/marcelstoer/nodemcu-build.svg)](https://hub.docker.com/r/marcelstoer/nodemcu-build/) [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/marcelstoer/docker-nodemcu-build/blob/master/LICENSE)
 
-Clone and edit the [NodeMCU firmware](https://github.com/nodemcu/nodemcu-firmware) locally on your platform. This image will take it from there and turn your code into a binary which you then can [flash to the ESP8266](https://learn.adafruit.com/building-and-running-micropython-on-the-esp8266/flash-firmware).
+Clone and edit the [NodeMCU firmware](https://github.com/nodemcu/nodemcu-firmware) locally on your platform. This image will take it from there and turn your code into a binary which you then can [flash to the ESP8266](http://nodemcu.readthedocs.org/en/dev/en/flash/).
 
 ## Target audience
 I see 3 types of NodeMCU developers:
@@ -39,7 +39,7 @@ You can pass the following optional parameters to the Docker build like so `dock
 - `FLOAT_ONLY` Set this to 1 if you only need NodeMCU with floating support, cuts the build time in half.
 
 ### Flashing the built binary
-There are several [tools to flash the firmware](https://learn.adafruit.com/building-and-running-micropython-on-the-esp8266/flash-firmware) to the ESP8266. If you were to use [esptool](https://github.com/themadinventor/esptool) (like I do) you'd run:
+There are several [tools to flash the firmware](http://nodemcu.readthedocs.org/en/dev/en/flash/) to the ESP8266. If you were to use [esptool](https://github.com/themadinventor/esptool) (like I do) you'd run:
 
 `esptool.py --port <USB-port-with-ESP8266> write_flash 0x00000 <NodeMCU-firmware-directory>/bin/nodemcu_[integer|float]_<Git-branch>.bin `
 
