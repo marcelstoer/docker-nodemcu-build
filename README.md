@@ -28,6 +28,12 @@ Clone the  [NodeMCU firmware](https://github.com/nodemcu/nodemcu-firmware) repos
 
 Depending on the power of your system it takes anywhere between 1 and 3min until the compilation finishes. The first time you run this it takes longer because Docker needs to download the image and create a container.
 
+**Note for Windows users**
+
+(Docker on) Windows handles paths slightly differently. You need to specify the full path to your firmware directory in the command and you need to add an extra forward slash (`/`) in front of the two paths. The command thus becomes (`c` equals C drive i.e. `c:`):
+
+`docker run --rm -it -v //c/<nodemcu-firmware-directory>://opt/nodemcu-firmware marcelstoer/nodemcu-build`
+
 #### Output
 The two firmware files (integer and float) are created in the `bin` sub folder of your NodeMCU root directory. You will also find a mapfile in the `bin` folder with the same name as the firmware file but with a `.map` ending.
 
