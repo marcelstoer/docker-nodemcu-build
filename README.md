@@ -34,7 +34,7 @@ Depending on the power of your system it takes anywhere between 1 and 3min until
 
 `docker run --rm -it -v //c/<nodemcu-firmware-directory>://opt/nodemcu-firmware marcelstoer/nodemcu-build`
 
-It even seems to be required that the firmware directory is placed inside your Windows profile folder (see [#7](https://github.com/marcelstoer/docker-nodemcu-build/issues/7) and [#8](https://github.com/marcelstoer/docker-nodemcu-build/issues/8)). Hence the full path would be `//c/Users/<user>/<nodemcu-firmware>`. If `<user>` the whole path would have to be wrapped in quotes as usual on Windows.
+It even seems to be required that the firmware directory is placed inside your Windows profile folder (see [#7](https://github.com/marcelstoer/docker-nodemcu-build/issues/7) and [#8](https://github.com/marcelstoer/docker-nodemcu-build/issues/8)). Hence the full path would be `//c/Users/<user>/<nodemcu-firmware>`. If `<user>` contains spaces the whole path would have to be wrapped in quotes as usual on Windows.
 
 #### Output
 The two firmware files (integer and float) are created in the `bin` sub folder of your NodeMCU root directory. You will also find a mapfile in the `bin` folder with the same name as the firmware file but with a `.map` ending.
