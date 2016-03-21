@@ -19,22 +19,29 @@ I see 3 types of NodeMCU developers:
 
 ## Usage
 ### Install Docker
-Follow the instructions at https://docs.docker.com/ → 'Get Started' (orange button top right).
+Follow the instructions at [https://docs.docker.com/](https://docs.docker.com/) → 'Get Started' (orange button top right).
 
-### Run this container with Docker
-Clone the  [NodeMCU firmware](https://github.com/nodemcu/nodemcu-firmware) repository on your machine. Start Docker and change to your firmware directory (in the Docker console). Then run:
+### Clone the NodeMCU firmware repository
+Docker runs on a VirtualBox VM which by default only shares the user directory from the underlying guest OS. On Windows that is `c:/Users/<user>` and on Mac it's `/Users/<user>`. Hence, you need to clone the  [NodeMCU firmware](https://github.com/nodemcu/nodemcu-firmware) repository to your *user directory*. If you want to place it outside the user directory you need to adjust the [VirtualBox VM sharing settings](http://stackoverflow.com/q/33934776/131929) accordingly.
+
+`git clone https://github.com/nodemcu/nodemcu-firmware.git`
+
+### Run this image with Docker
+Start Docker and change the NodeMCU firmware directory (in the Docker console). Then run:
 
 ``docker run --rm -ti -v `pwd`:/opt/nodemcu-firmware marcelstoer/nodemcu-build``
 
-Depending on the power of your system it takes anywhere between 1 and 3min until the compilation finishes. The first time you run this it takes longer because Docker needs to download the image and create a container.
+Depending on the performance of your system it takes 1-3min until the compilation finishes. The first time you run this it takes longer because Docker needs to download the image and create a container.
 
 **Note for Windows users**
 
-(Docker on) Windows handles paths slightly differently. You need to specify the full path to your firmware directory in the command and you need to add an extra forward slash (`/`) in front of the two paths. The command thus becomes (`c` equals C drive i.e. `c:`):
+(Docker on) Windows handles paths slightly differently. You need to specify the full path to the NodeMCU firmware directory in the command and you need to add an extra forward slash (`/`) in front of the Windows path. The command thus becomes (`c` equals C drive i.e. `c:`):
 
-`docker run --rm -it -v //c/<nodemcu-firmware-directory>://opt/nodemcu-firmware marcelstoer/nodemcu-build`
+`docker run --rm -it -v //c/Users/<user>/<nodemcu-firmware>:/opt/nodemcu-firmware marcelstoer/nodemcu-build`
 
-It even seems to be required that the firmware directory is placed inside your Windows profile folder (see [#7](https://github.com/marcelstoer/docker-nodemcu-build/issues/7) and [#8](https://github.com/marcelstoer/docker-nodemcu-build/issues/8)). Hence the full path would be `//c/Users/<user>/<nodemcu-firmware>`. If `<user>` contains spaces the whole path would have to be wrapped in quotes as usual on Windows.
+If the Windows path contains spaces it would have to be wrapped in quotes as usual on Windows.
+
+`docker run --rm -it -v "//c/Users/monster tune/<nodemcu-firmware>":/opt/nodemcu-firmware marcelstoer/nodemcu-build`
 
 #### Output
 The two firmware files (integer and float) are created in the `bin` sub folder of your NodeMCU root directory. You will also find a mapfile in the `bin` folder with the same name as the firmware file but with a `.map` ending.
