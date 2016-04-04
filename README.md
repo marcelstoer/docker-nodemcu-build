@@ -27,7 +27,7 @@ Docker runs on a VirtualBox VM which by default only shares the user directory f
 `git clone https://github.com/nodemcu/nodemcu-firmware.git`
 
 ### Run this image with Docker
-Start Docker and change the NodeMCU firmware directory (in the Docker console). Then run:
+Start Docker and change to the NodeMCU firmware directory (in the Docker console). Then run:
 
 ``docker run --rm -ti -v `pwd`:/opt/nodemcu-firmware marcelstoer/nodemcu-build``
 
@@ -35,7 +35,7 @@ Depending on the performance of your system it takes 1-3min until the compilatio
 
 **Note for Windows users**
 
-(Docker on) Windows handles paths slightly differently. You need to specify the full path to the NodeMCU firmware directory in the command and you need to add an extra forward slash (`/`) in front of the Windows path. The command thus becomes (`c` equals C drive i.e. `c:`):
+(Docker on) Windows handles paths slightly differently. You need to specify the full path to the NodeMCU firmware directory in the command and you need to add an extra forward slash (`/`) to the Windows path. The command thus becomes (`c` equals C drive i.e. `c:`):
 
 `docker run --rm -it -v //c/Users/<user>/<nodemcu-firmware>:/opt/nodemcu-firmware marcelstoer/nodemcu-build`
 
