@@ -25,9 +25,9 @@ WORKDIR /opt/nodemcu-firmware
 # - copy and rename the mapfile to bin/
 # - make an integer build
 # - copy and rename the mapfile to bin/
-CMD BUILD_DATE="$(date +%Y%m%d-%H%M)" && \
-    if [ -z "$IMAGE_NAME" ]; then \
+CMD if [ -z "$IMAGE_NAME" ]; then \
       BRANCH="$(git rev-parse --abbrev-ref HEAD)" && \
+      BUILD_DATE="$(date +%Y%m%d-%H%M)" && \
       IMAGE_NAME=${BRANCH}_${BUILD_DATE}; \
     else true; \
     fi && \
