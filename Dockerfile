@@ -18,7 +18,7 @@ WORKDIR /opt/nodemcu-firmware
 # - FLOAT_ONLY=1, if you want the floating point firmware
 #
 # What the commands do:
-# - store the Git branch in 'BRANCH' if IMAGE_NAME not set
+# - use the Git branch and the current time stamp to define image name if IMAGE_NAME not set
 # - unpack esp-open-sdk.tar.gz in a directory that is NOT the bound mount directory (i.e. inside the Docker image)
 # - remove all files in <firmware-dir>/bin
 # - make a float build if !only-integer
@@ -29,8 +29,7 @@ CMD if [ -z "$IMAGE_NAME" ]; then \
       BRANCH="$(git rev-parse --abbrev-ref HEAD)" && \
       BUILD_DATE="$(date +%Y%m%d-%H%M)" && \
       IMAGE_NAME=${BRANCH}_${BUILD_DATE}; \
-    else true; \
-    fi && \
+    else true; fi && \
     cp tools/esp-open-sdk.tar.gz ../ && \
     cd ..  && \
     tar -zxvf esp-open-sdk.tar.gz  && \
