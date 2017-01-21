@@ -8,7 +8,7 @@ MAINTAINER marcelstoer
 # - cd <nodemcu-firmware>
 # - docker run --rm -ti -v `pwd`:/opt/nodemcu-firmware docker-nodemcu-build
 
-RUN apt-get update && apt-get install -y wget unzip git make python-serial srecord bc gcc
+RUN apt-get update && apt-get install -y wget unzip git make python-serial srecord bc xz-utils gcc
 RUN mkdir /opt/nodemcu-firmware
 WORKDIR /opt/nodemcu-firmware
 
@@ -30,9 +30,13 @@ CMD if [ -z "$IMAGE_NAME" ]; then \
       BUILD_DATE="$(date +%Y%m%d-%H%M)" && \
       IMAGE_NAME=${BRANCH}_${BUILD_DATE}; \
     else true; fi && \
-    cp tools/esp-open-sdk.tar.gz ../ && \
+    cp tools/esp-open-sdk.tar.* ../ && \
     cd ..  && \
-    tar -zxvf esp-open-sdk.tar.gz  && \
+    if [ -f ./esp-open-sdk.tar.xz ]; then \
+        tar -Jxvf esp-open-sdk.tar.xz; \
+    else \
+        tar -zxvf esp-open-sdk.tar.gz; \
+    fi && \
     export PATH=$PATH:$PWD/esp-open-sdk/sdk:$PWD/esp-open-sdk/xtensa-lx106-elf/bin  && \
     cd nodemcu-firmware  && \
     if [ -z "$INTEGER_ONLY" ]; then \
