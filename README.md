@@ -33,6 +33,10 @@ Start Docker and change to the NodeMCU firmware directory (in the Docker console
 
 Depending on the performance of your system it takes 1-3min until the compilation finishes. The first time you run this it takes longer because Docker needs to download the image and create a container.
 
+:bangbang: If you have previously pulled this Docker image (e.g. with the command above) you should update the image from time to time to pull in the latest bug fixes:
+
+`docker pull marcelstoer/nodemcu-build`
+
 **Note for Windows users**
 
 (Docker on) Windows handles paths slightly differently. You need to specify the full path to the NodeMCU firmware directory in the command and you need to add an extra forward slash (`/`) to the Windows path. The command thus becomes (`c` equals C drive i.e. `c:`):
