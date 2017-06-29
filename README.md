@@ -18,10 +18,11 @@ I see 3 types of NodeMCU developers:
   They commit or contribute to the project on GitHub and need their own full fledged [build environment with the complete tool chain](http://www.esp8266.com/wiki/doku.php?id=toolchain#how_to_setup_a_vm_to_host_your_toolchain). _They still might find this Docker image useful._
 
 ## Usage
-### Install Docker
-Follow the instructions at [https://docs.docker.com/](https://docs.docker.com/) → 'Get Started' (orange button top right).
 
-### Clone the NodeMCU firmware repository
+### Install Docker
+Follow the instructions at [https://docs.docker.com/get-started/](https://docs.docker.com/get-started/).
+
+### Clone the NodeMCU firmware repository
 Docker runs on a VirtualBox VM which by default only shares the user directory from the underlying guest OS. On Windows that is `c:/Users/<user>` and on Mac it's `/Users/<user>`. Hence, you need to clone the  [NodeMCU firmware](https://github.com/nodemcu/nodemcu-firmware) repository to your *user directory*. If you want to place it outside the user directory you need to adjust the [VirtualBox VM sharing settings](http://stackoverflow.com/q/33934776/131929) accordingly.
 
 `git clone https://github.com/nodemcu/nodemcu-firmware.git`
