@@ -12,6 +12,9 @@ RUN apt-get update && apt-get install -y wget unzip git make python-serial sreco
 RUN mkdir /opt/nodemcu-firmware
 WORKDIR /opt/nodemcu-firmware
 
+RUN rm -rf /root
+RUN ln -s /tmp /root
+
 COPY cmd.sh /opt/
 
 CMD /opt/cmd.sh

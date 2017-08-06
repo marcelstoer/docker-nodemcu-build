@@ -17,8 +17,12 @@ else
 fi
 
 # unpack esp-open-sdk.tar.gz in a directory that is NOT the bound mount directory (i.e. inside the Docker image)
-cp tools/esp-open-sdk.tar.* ../
-cd ..
+export HOME=/tmp/esp
+rm -rf ${HOME}
+mkdir ${HOME}
+
+cp tools/esp-open-sdk.tar.* ${HOME}
+cd ${HOME}
 # support older build chains (before we re-packaged it)
 if [ -f ./esp-open-sdk.tar.xz ]; then
   tar -Jxvf esp-open-sdk.tar.xz
@@ -28,7 +32,7 @@ fi
 
 export PATH=$PATH:$PWD/esp-open-sdk/sdk:$PWD/esp-open-sdk/xtensa-lx106-elf/bin
 export CCACHE_DIR=/opt/nodemcu-firmware/.ccache
-cd nodemcu-firmware
+cd /opt/nodemcu-firmware
 
 # make a float build if !only-integer
 if [ -z "$INTEGER_ONLY" ]; then
