@@ -27,11 +27,12 @@ else
 fi
 
 export PATH=$PATH:$PWD/esp-open-sdk/sdk:$PWD/esp-open-sdk/xtensa-lx106-elf/bin
+export CCACHE_DIR=/opt/nodemcu-firmware/.ccache
 cd nodemcu-firmware
 
 # make a float build if !only-integer
 if [ -z "$INTEGER_ONLY" ]; then
-  make clean all
+  make WRAPCC=`which ccache` clean all
   cd bin
   srec_cat -output nodemcu_float_"${IMAGE_NAME}".bin -binary 0x00000.bin -binary -fill 0xff 0x00000 0x10000 0x10000.bin -binary -offset 0x10000
   # copy and rename the mapfile to bin/
@@ -43,7 +44,7 @@ fi
 
 # make an integer build
 if [ -z "$FLOAT_ONLY" ]; then
-  make EXTRA_CCFLAGS="-DLUA_NUMBER_INTEGRAL" clean all
+  make WRAPCC=`which ccache` EXTRA_CCFLAGS="-DLUA_NUMBER_INTEGRAL" clean all
   cd bin
   srec_cat -output nodemcu_integer_"${IMAGE_NAME}".bin -binary 0x00000.bin -binary -fill 0xff 0x00000 0x10000 0x10000.bin -binary -offset 0x10000
   # copy and rename the mapfile to bin/
