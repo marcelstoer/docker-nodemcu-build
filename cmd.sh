@@ -10,8 +10,8 @@ set -e
 # use the Git branch and the current time stamp to define image name if IMAGE_NAME not set
 if [ -z "$IMAGE_NAME" ]; then
   BRANCH="$(git rev-parse --abbrev-ref HEAD | sed -r 's/[\/\\]+/_/g')"
-  BUILD_DATE="$(date +%Y%m%d-%H%M)"
-  IMAGE_NAME=${BRANCH}_${BUILD_DATE}
+  TIME_STAMP="$(date +%Y%m%d-%H%M)"
+  IMAGE_NAME=${BRANCH}_${TIME_STAMP}
 else
   true
 fi
@@ -32,11 +32,12 @@ fi
 
 export PATH=$PATH:$PWD/esp-open-sdk/sdk:$PWD/esp-open-sdk/xtensa-lx106-elf/bin
 export CCACHE_DIR=/opt/nodemcu-firmware/.ccache
+export BUILD_DATE="\\\"$(date "+%Y-%m-%d %H:%M")\\\""
 cd /opt/nodemcu-firmware
 
 # make a float build if !only-integer
 if [ -z "$INTEGER_ONLY" ]; then
-  make WRAPCC=`which ccache` clean all
+  make WRAPCC=`which ccache` EXTRA_CCFLAGS="-DBUILD_DATE=\"$BUILD_DATE\"" clean all
   cd bin
   srec_cat -output nodemcu_float_"${IMAGE_NAME}".bin -binary 0x00000.bin -binary -fill 0xff 0x00000 0x10000 0x10000.bin -binary -offset 0x10000
   # copy and rename the mapfile to bin/
@@ -48,7 +49,7 @@ fi
 
 # make an integer build
 if [ -z "$FLOAT_ONLY" ]; then
-  make WRAPCC=`which ccache` EXTRA_CCFLAGS="-DLUA_NUMBER_INTEGRAL" clean all
+  make WRAPCC=`which ccache` EXTRA_CCFLAGS="-DLUA_NUMBER_INTEGRAL -DBUILD_DATE=\"$BUILD_DATE\"" clean all
   cd bin
   srec_cat -output nodemcu_integer_"${IMAGE_NAME}".bin -binary 0x00000.bin -binary -fill 0xff 0x00000 0x10000 0x10000.bin -binary -offset 0x10000
   # copy and rename the mapfile to bin/
