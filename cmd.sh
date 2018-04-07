@@ -57,7 +57,7 @@ cd /opt/nodemcu-firmware
 # EXTRA_CCFLAGS="-DBUILD_DATE=... AND -DNODE_VERSION=..." to make turned into an escaping/expanding nightmare for which
 # I never found a good solution
 if [ "$CAN_MODIFY_VERSION" = true ]; then
-  MODULES=$(awk '/^#define LUA_USE_MODULES/{print tolower(substr($2,17))}' app/include/user_modules.h | paste -s -d, -)
+  MODULES=$(awk '/^[ \t]*#define LUA_USE_MODULES/{print tolower(substr($2,17))}' app/include/user_modules.h | paste -s -d, -)
   sed -i '/#define NODE_VERSION[[:space:]]/ s/$/ " built with Docker provided by frightanic.com\\n\\tbranch: '"$BRANCH"'\\n\\tcommit: '"$COMMIT_ID"'\\n\\tSSL: '"$SSL"'\\n\\tmodules: '"$MODULES"'\\n"/g' app/include/user_version.h
   sed -i 's/"unspecified"/"created on '"$BUILD_DATE"'\\n"/g' app/include/user_version.h
 fi
