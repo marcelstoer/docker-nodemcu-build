@@ -7,7 +7,7 @@ set -e
 # - INTEGER_ONLY=1, if you want the integer firmware
 # - FLOAT_ONLY=1, if you want the floating point firmware
 
-export BUILD_DATE COMMIT_ID BRANCH SSL
+export BUILD_DATE COMMIT_ID BRANCH SSL MODULES
 BUILD_DATE="$(date "+%Y-%m-%d %H:%M")"
 COMMIT_ID="$(git rev-parse HEAD)"
 BRANCH="$(git rev-parse --abbrev-ref HEAD | sed -r 's/[\/\\]+/_/g')"
@@ -57,7 +57,8 @@ cd /opt/nodemcu-firmware
 # EXTRA_CCFLAGS="-DBUILD_DATE=... AND -DNODE_VERSION=..." to make turned into an escaping/expanding nightmare for which
 # I never found a good solution
 if [ "$CAN_MODIFY_VERSION" = true ]; then
-  sed -i '/#define NODE_VERSION[[:space:]]/ s/$/ " built with Docker provided by frightanic.com\\n\\tbranch: '"$BRANCH"'\\n\\tcommit: '"$COMMIT_ID"'\\n\\tSSL: '"$SSL"'\\n"/g' app/include/user_version.h
+  MODULES=$(awk '/^[ \t]*#define LUA_USE_MODULES/{modules=modules sep tolower(substr($2,17));sep=","}END{if(length(modules)==0)modules="-";print modules}' app/include/user_modules.h)
+  sed -i '/#define NODE_VERSION[[:space:]]/ s/$/ " built with Docker provided by frightanic.com\\n\\tbranch: '"$BRANCH"'\\n\\tcommit: '"$COMMIT_ID"'\\n\\tSSL: '"$SSL"'\\n\\tmodules: '"$MODULES"'\\n"/g' app/include/user_version.h
   sed -i 's/"unspecified"/"created on '"$BUILD_DATE"'\\n"/g' app/include/user_version.h
 fi
 
