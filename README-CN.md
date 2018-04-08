@@ -22,7 +22,7 @@ NodeMCU 开发者可以分为三类：
 ## 用法
 
 ### 安装 Docker
-Docker是一个开放源代码软件项目，让应用程序布署在软件容器下的工作可以自动化进行，借此在Linux操作系统上，提供一个额外的软件抽象层，以及操作系统层虚拟化的自动管理机制。Docker 现在拥有不同系统平台的安装包，查看[官方文档](https://docs.docker.com/get-started/)可以获取方便的安装教程。
+Docker 是一个开源项目，让应用程序布署在软件容器下的工作可以自动化进行，借此在Linux操作系统上，提供一个额外的软件抽象层，以及操作系统层虚拟化的自动管理机制。Docker 现在拥有不同系统平台的安装包，查看[官方文档](https://docs.docker.com/get-started/)可以获取方便的安装教程。
 
 ### 克隆仓库
 运行下面命令克隆代码到你喜欢的目录：
@@ -41,7 +41,7 @@ docker pull marcelstoer/nodemcu-build
 ```
 
 **Windows 用户笔记**  
-(Docker on) Windows处理路径略有不同，您需要指定命令中NodeMCU固件目录的完整路径，您需要在Windows路径中添加一个额外的正斜杠('/')。这样命令就变成了(即c盘, "c:")：
+(Docker on) Windows 处理路径略有不同，您需要指定命令中 NodeMCU 固件目录的完整路径，您需要在 Windows 路径中添加一个额外的正斜杠('/')。这样命令就变成了(即c盘, "c:")：
 ```
 docker run --rm -it -v //c/Users/<user>/<nodemcu-firmware>:/opt/nodemcu-firmware marcelstoer/nodemcu-build
 ```
@@ -56,9 +56,12 @@ docker run --rm -it -v "//c/Users/monster tune/<nodemcu-firmware>":/opt/nodemcu-
 #### 可选参数
 您可以像这样将下列可选参数传递给 Docker `docker run -e "<parameter>=value" -e ...`. 
 
-- ``IMAGE_NAME`默认的固件文件名是`nodemcu_float|integer_<branch>_<timestamp>.bin`。如果您定义了图片名称，则会替换`<branch>_<timestamp>`后缀，并且完整的图片名称会变成`nodemcu_float|integer_<image_name>.bin`。
-- ``INTEGER_ONLY` 如果您不需要支持浮动支持的NodeMCU，则将其设置为1，将构建时间减半。
-- `FLOAT_ONLY` 如果您只需要支持浮动支持的NodeMCU，则将其设置为1，将构建时间减半。
+- `IMAGE_NAME` 默认的固件文件名是`nodemcu_float|integer_<branch>_<timestamp>.bin`。如果您定义了图片名称，则会替换`<branch>_<timestamp>` 后缀，并且完整的图片名称会变成`nodemcu_float|integer_<image_name>.bin`。
+- `INTEGER_ONLY` 如果您不需要支持浮动支持的 NodeMCU，则将其设置为 1，将构建时间减半。
+- `FLOAT_ONLY` 如果您只需要支持浮动支持的 NodeMCU，则将其设置为 1，将构建时间减半。
+- `TZ` 默认情况下，Docker 容器将以 UTC 时区运行。因此默认镜像名称（参见 `IMAGE_NAME` 上面的选项）的时间戳中的时间，不会与主机系统时间相同。要解决此问题，您可以将 `TZ` 参数设置为任何[有效的时区名称](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) 例如 `-e TZ=Asia/Shanghai`。
+
+
 
 ### 下载固件
 使用固件 [下载工具](http://nodemcu.readthedocs.org/en/dev/en/flash/) 可以下载固件到 ESP8266。例如你使用 [esptool](https://github.com/themadinventor/esptool)（我喜欢这样用）可以运行如下命令下载固件:
