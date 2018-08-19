@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:14.04
 MAINTAINER marcelstoer
 
 # If you want to tinker with this Dockerfile on your machine do as follows:
