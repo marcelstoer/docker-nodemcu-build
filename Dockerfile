@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:14.04
 MAINTAINER marcelstoer
 
 # If you want to tinker with this Dockerfile on your machine do as follows:
@@ -8,10 +8,7 @@ MAINTAINER marcelstoer
 # - cd <nodemcu-firmware>
 # - docker run --rm -ti -v `pwd`:/opt/nodemcu-firmware docker-nodemcu-build
 
-RUN echo 'Etc/UTC' > /etc/timezone && \
-    ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
-	apt-get update && apt-get install -y wget unzip git make python-serial srecord bc xz-utils gcc ccache tzdata && \
-    rm -rf /var/lib/apt/lists/*	
+RUN apt-get update && apt-get install -y wget unzip git make python-serial srecord bc xz-utils gcc ccache tzdata
 RUN mkdir /opt/nodemcu-firmware
 WORKDIR /opt/nodemcu-firmware
 
