@@ -1,3 +1,5 @@
+# see https://hub.docker.com/_/ubuntu/ for versions, should be the same as on Travis for NodeMCU CI
+# 14.04 == trusty
 FROM ubuntu:14.04
 MAINTAINER marcelstoer
 
@@ -9,6 +11,8 @@ MAINTAINER marcelstoer
 # - docker run --rm -ti -v `pwd`:/opt/nodemcu-firmware docker-nodemcu-build
 
 RUN apt-get update && apt-get install -y wget unzip git make python-serial srecord bc xz-utils gcc ccache tzdata
+# Release some space...
+RUN rm -rf /var/lib/apt/lists/*
 RUN mkdir /opt/nodemcu-firmware
 WORKDIR /opt/nodemcu-firmware
 
