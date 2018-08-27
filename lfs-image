@@ -4,7 +4,7 @@ set -e
 set +e
 
 # Config options you may pass via Docker like so 'docker run -e "<option>=<value>"':
-# - IMAGE_NAME=<name>, define a static name for your .bin files
+# - IMAGE_NAME=<name>, define a static name for your .img files
 
 cd /opt/nodemcu-firmware
 
@@ -24,13 +24,13 @@ fi
 
 # make a float LFS image if available
 if [ -x luac.cross ]; then
-  echo creating "${IMAGE_NAME}".bin
-  find ../lua -iname "*.lua" -exec ./luac.cross -f -o ../lua/"${IMAGE_NAME}".bin {} +
+  echo creating "${IMAGE_NAME}".img
+  find ../lua -iname "*.lua" -exec ./luac.cross -f -o ../lua/"${IMAGE_NAME}".img {} +
 fi
 
 # make an int LFS image if available
 if [ -x luac.cross.int ]; then
-  echo creating "${IMAGE_NAME}"_int.bin
-  find ../lua -iname "*.lua" -exec ./luac.cross.int -f -o ../lua/"${IMAGE_NAME}".bin {} +
+  echo creating "${IMAGE_NAME}"_int.img
+  find ../lua -iname "*.lua" -exec ./luac.cross.int -f -o ../lua/"${IMAGE_NAME}".img {} +
 fi
 
