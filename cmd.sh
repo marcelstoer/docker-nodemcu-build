@@ -21,7 +21,7 @@ fi
 
 # check whether the user made changes to the version file, if so then assume she wants to use a custom version rather
 # than the one that would be set here -> we can't modify it
-if git diff --quiet app/include/user_version.h; then
+if git diff -b --quiet app/include/user_version.h; then
     CAN_MODIFY_VERSION=true
 else
     CAN_MODIFY_VERSION=false
@@ -57,7 +57,8 @@ cd /opt/nodemcu-firmware
 # EXTRA_CCFLAGS="-DBUILD_DATE=... AND -DNODE_VERSION=..." to make turned into an escaping/expanding nightmare for which
 # I never found a good solution
 if [ "$CAN_MODIFY_VERSION" = true ]; then
-  MODULES=$(awk '/^[ \t]*#define LUA_USE_MODULES/{modules=modules sep tolower(substr($2,17));sep=","}END{if(length(modules)==0)modules="-";print modules}' app/include/user_modules.h)
+  sed -i 's;\r;;g' app/include/user_version.h
+  MODULES=$(awk '/^[ \t]*#define LUA_USE_MODULES/{modules=modules sep tolower(substr($2,17));sep=","}END{if(length(modules)==0)modules="-";print modules}' app/include/user_modules.h | tr -d '\r')
   sed -i '/#define NODE_VERSION[[:space:]]/ s/$/ " built with Docker provided by frightanic.com\\n\\tbranch: '"$BRANCH"'\\n\\tcommit: '"$COMMIT_ID"'\\n\\tSSL: '"$SSL"'\\n\\tmodules: '"$MODULES"'\\n"/g' app/include/user_version.h
   sed -i 's/"unspecified"/"created on '"$BUILD_DATE"'\\n"/g' app/include/user_version.h
 fi
