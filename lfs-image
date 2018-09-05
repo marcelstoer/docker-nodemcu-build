@@ -31,6 +31,6 @@ fi
 # make an int LFS image if available
 if [ -x luac.cross.int ]; then
   echo creating "${IMAGE_NAME}"_int.img
-  find ../lua -iname "*.lua" -exec ./luac.cross.int -f -o ../lua/"${IMAGE_NAME}".img {} +
+  find ../lua -iname "*.lua" -exec ./luac.cross.int -f -o ../lua/"${IMAGE_NAME}"_int.img {} +
 fi
 

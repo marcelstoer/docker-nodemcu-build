@@ -31,6 +31,15 @@ Docker runs on a VirtualBox VM which by default only shares the user directory f
 
 `git clone https://github.com/nodemcu/nodemcu-firmware.git`
 
+### Configure the Modules and Features to use
+To configure the modules to be built in the firmware edit app/include/user_modules.h
+Also consider turning on SSL or [LFS](https://nodemcu.readthedocs.io/en/dev/en/lfs/) in app/include/user_config.h
+You can also enable integer builds there.
+
+#### Configure Version and Build Date
+The Version information and Build Date are configured automatically for you if app/include/user_version.h is unmodified.
+The build script adds information about the built modules and features to be displayed on boot of your device.
+
 ### Run this image with Docker to create the firmware
 Start Docker and change to the NodeMCU firmware directory (in the Docker console). To build the firmware run:
 
@@ -45,9 +54,9 @@ The two firmware files (integer and float) are created in the `bin` sub folder o
 You can pass the following optional parameters to the Docker build like so `docker run -e "<parameter>=value" -e ...`. 
 
 - `IMAGE_NAME` The default firmware file names are `nodemcu_float|integer_<branch>_<timestamp>.bin`. If you define an image name it replaces the `<branch>_<timestamp>` suffix and the full image names become `nodemcu_float|integer_<image_name>.bin`.
-- `INTEGER_ONLY` Set this to 1 if you don't need NodeMCU with floating support, cuts the build time in half.
-- `FLOAT_ONLY` Set this to 1 if you only need NodeMCU with floating support, cuts the build time in half.
 - `TZ` By default the Docker container will run in UTC timezone. Hence, the time in the timestamp of the default image name (see `IMAGE_NAME` option above) will not be same as your host system time - unless that is UTC as well of course. To fix this you can set the `TZ` parameter to any [valid timezone name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) e.g. `-e TZ=Asia/Kolkata`.
+
+`INTEGER_ONLY` and `FLOAT_ONLY` are not supported anymore. Please configure LUA_NUMBER_INTEGRAL in app/include/user_config.h
 
 #### Flashing the built binary
 There are several [tools to flash the firmware](http://nodemcu.readthedocs.org/en/dev/en/flash/) to the ESP8266. If you were to use [esptool](https://github.com/themadinventor/esptool) (like I do) you'd run:
