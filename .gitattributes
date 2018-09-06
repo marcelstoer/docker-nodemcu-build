@@ -1,0 +1,7 @@
+# Declare scripts  that will always have LF line endings on checkout.
+build text eol=lf
+cmd.sh text eol=lf
+lfs-image text eol=lf
+
+# Declare win dump file that will always have CRLF line endings on checkout.
+read.me text eol=crlf

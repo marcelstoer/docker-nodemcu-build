@@ -1,0 +1,25 @@
+
+Welcome to the Docker image to build NodeMCU firmware and LFS images.
+
+To build the firmware or an LFS image you need to add the respective command 
+to the line you just used.
+Say you used 
+
+  docker run --rm -it -v C:/Users/ ... nodemcu-firmware:/opt/nodemcu-firmware marcelstoer/nodemcu-build  
+
+now use
+
+  docker run --rm -it -v C:/Users/ ... nodemcu-firmware:/opt/nodemcu-firmware marcelstoer/nodemcu-build build
+
+Following commands are available:
+
+build        builds your firmware
+
+lfs-image    create an LFS image
+             To do this you must tell docker where your lua files are stored.
+             Add another '-v c:/lua_location:opt/lua' to the commandline.
+             All lua files stored in that location will be added recursively 
+             to the LFS image.
+
+For more Information please see https://hub.docker.com/r/marcelstoer/nodemcu-build
+

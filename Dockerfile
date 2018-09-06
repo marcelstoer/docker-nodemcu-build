@@ -18,7 +18,11 @@ WORKDIR /opt/nodemcu-firmware
 
 RUN rm -rf /root
 RUN ln -s /tmp /root
+ENV PATH="/opt:${PATH}"
 
 COPY cmd.sh /opt/
+COPY read.me /opt/
+COPY build /opt/
+COPY lfs-image /opt/
 
 CMD /opt/cmd.sh
