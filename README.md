@@ -74,7 +74,7 @@ This will compile and store all Lua files in the given folder including subfolde
 #### Output
 Depending on what type(s) of firmware you built this will create one or two LFS images in the root of your lua folder.
 
-### **Note for Windows users**
+### Note for Windows users
 
 (Docker on) Windows handles paths slightly differently. You need to specify the full path to the NodeMCU firmware directory in the command and you need to add an extra forward slash (`/`) to the Windows path. The command thus becomes (`c` equals C drive i.e. `c:`):
 
