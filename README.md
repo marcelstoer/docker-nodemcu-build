@@ -49,7 +49,7 @@ Start Docker and change to the NodeMCU firmware directory (in the Docker console
 Depending on the performance of your system it takes 1-3min until the compilation finishes. The first time you run this it takes longer because Docker needs to download the image and create a container.
 
 #### Output
-The firmware binary (integer or float) are created in the `bin` subfolder of your NodeMCU root directory. You will also find a mapfile in the `bin` folder with the same name as the firmware file but with a `.map` ending.
+The firmware binary (integer or float) is created in the `bin` subfolder of your NodeMCU root directory. You will also find a mapfile in the `bin` folder with the same name as the firmware file but with a `.map` ending.
 
 #### Options
 You can pass the following optional parameters to the Docker build like so `docker run -e "<parameter>=value" -e ...`. 
