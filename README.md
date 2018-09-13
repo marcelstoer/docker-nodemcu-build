@@ -67,7 +67,7 @@ There are several [tools to flash the firmware](http://nodemcu.readthedocs.org/e
 ### Run this image with Docker to create an LFS image
 Start Docker and change to the NodeMCU firmware directory (in the Docker console). To create the LFS image run:
 
-``docker run --rm -ti -v `pwd`:/opt/nodemcu-firmware marcelstoer/nodemcu-build -v {PathToLuaSourceFolder}:/opt/lua marcelstoer/nodemcu-build lfs-image``
+``docker run --rm -ti -v `pwd`:/opt/nodemcu-firmware -v {PathToLuaSourceFolder}:/opt/lua marcelstoer/nodemcu-build lfs-image``
 
 This will compile and store all Lua files in the given folder including subfolders.
 
