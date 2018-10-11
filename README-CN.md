@@ -68,7 +68,7 @@ docker pull marcelstoer/nodemcu-build
 
 ## 贡献
 感谢 [Paul Sokolovsky](http://pfalcon-oe.blogspot.com/) 创建并维护 [esp-open-sdk](https://github.com/pfalcon/esp-open-sdk)。  
-把更多的感谢给  [Paul Sokolovsky](http://pfalcon-oe.blogspot.com/) ，他实现了 LFS 支持，并删除了此镜像的设计不良的 `INTEGER_ONLY` / `FLOAT_ONLY` 参数。
+把更多的感谢给  [Gregor Hartmann](https://github.com/HHHartmann) ，他实现了 LFS 支持，并删除了此镜像的设计不良的 `INTEGER_ONLY` / `FLOAT_ONLY` 参数。
 
 ## 作者
 [http://frightanic.com](http://frightanic.com)
