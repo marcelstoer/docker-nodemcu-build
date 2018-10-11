@@ -8,16 +8,17 @@
 NodeMCU 开发者可以分为三类：
 - 应用开发者
 
-    他们需要一个现成的固件, 我创建 [云端构建服务](http://nodemcu-build.com/index.php) 界面友好具有可配置选项，使用起来可以得心应手。
+  他们需要一个现成的固件, 我创建 [云端构建服务](http://nodemcu-build.com/index.php) 具有界面友好的配置选项。但是，如果是使用 [LFS](https://nodemcu.readthedocs.io/en/latest/en/lfs/) ，他们可能想建立他们的LFS映像作为 [Terry Ellison's online service](https://blog.ellisons.org.uk/article/nodemcu/a-lua-cross-compile-web-service/) 在线服务的替代品。  
+  **这个镜像正是你们心中所求!**
 
 - 固件极客
 
-  他们不需要完全控制整个工具链，也不希望在构建环境中设置 Linux 虚拟机。
+  他们不需要完全控制整个工具链，也不希望在构建环境中设置 Linux 虚拟机。  
   **这个镜像正是你们心中所求!**
 
 - 固件开发者
 
-  他们在 GitHub 上提交或参与项目，并需要自己的完整功能。 [使用完整的工具链构建环境](http://www.esp8266.com/wiki/doku.php?id=toolchain#how_to_setup_a_vm_to_host_your_toolchain). _他们肯定会发现这个镜像有用._
+  他们在 GitHub 上提交或贡献项目，并且需要 [自己构建完整的编译环境和完整的工具链](http://www.esp8266.com/wiki/doku.php?id=toolchain#how_to_setup_a_vm_to_host_your_toolchain) 。他们肯定会发现这个镜像有用。
 
 ## 用法
 
@@ -30,18 +31,22 @@ Docker 是一个开源项目，让应用程序布署在软件容器下的工作�
 git clone https://github.com/nodemcu/nodemcu-firmware.git
 ```
 
-### 进行编译
-首先启动 Docker 并切换到 NodeMCU firmware 的目录，运行下面命令：
-```
-docker run --rm -ti -v `pwd`:/opt/nodemcu-firmware marcelstoer/nodemcu-build
-```
-根据系统的性能，需要 1-3 分钟，直到编译完成。第一次运行它需要更长的时间，因为 Docker 需要下载镜像并创建容器。如果您之前已经下载了这个 Docker 镜像，您应该经常更新镜像，运行下面命令以获取最新的版本：
-```
-docker pull marcelstoer/nodemcu-build
-```
+### 配置要使用的模块和特性
+**注意**构建脚本会将下面设的置选项添加到 NodeMCU 引导信息(在应用程序启动时转储到控制台)。
+配置要构建的模块功能编辑 `app/include/user_modules.h` 文件，也可以考虑在 `app/include/user_config.h `中打开 SSL 或 LFS。在同一个文件中的`#define LUA_NUMBER_INTEGRAL`参数，可以控制是否使用浮点支持构建固件。有关构建选项的其他选项和详细信息，请参阅 [NodeMCU 文档](https://nodemcu.readthedocs.io/en/latest/en/build/#build-options)。
 
-**Windows 用户笔记**  
-(Docker on) Windows 处理路径略有不同，您需要指定命令中 NodeMCU 固件目录的完整路径，您需要在 Windows 路径中添加一个额外的正斜杠('/')。这样命令就变成了(即c盘, "c:")：
+### 使用 Docker 运行此镜像创建 LFS 固件
+启动 Docker 并切换到 NodeMCU 固件目录, 运行下面命令创建 LFS 固件:
+```
+docker run --rm -ti -v `pwd`:/opt/nodemcu-firmware -v {PathToLuaSourceFolder}:/opt/lua marcelstoer/nodemcu-build lfs-image
+```
+这将编译并存储给定文件夹及其目录中中的所有 Lua 文件。
+
+#### 输出
+根据你构建的固件类型的不同，这将在 lua 文件夹的根目录中创建一个或两个 LFS 映像。
+
+### Windows 用户笔记
+Docker 在 Windows 平台处理路径略有不同，你需要在命令中指定 NodeMCU 固件目录的完整路径，且需要在 Windows 路径中添加一个额外的正斜杠('/')。这样命令就变成了(即c盘, "c:")：
 ```
 docker run --rm -it -v //c/Users/<user>/<nodemcu-firmware>:/opt/nodemcu-firmware marcelstoer/nodemcu-build
 ```
@@ -49,24 +54,11 @@ docker run --rm -it -v //c/Users/<user>/<nodemcu-firmware>:/opt/nodemcu-firmware
 ```
 docker run --rm -it -v "//c/Users/monster tune/<nodemcu-firmware>":/opt/nodemcu-firmware marcelstoer/nodemcu-build
 ```
+如果这个 Docker 容器挂载存储 hang 死了，请检查 Windows 服务 “LanmanServer” 是否正在运行，[详见 DockerBug #2196](https://github.com/docker/for-win/issues/2196)。
 
-#### 输出固件
-两个固件文件(integer和float)是在 NodeMCU 根目录的”bin"子文件夹中创建的。您还将在“bin”文件夹中找到与固件文件同名的 mapfile，但使用".map"结尾。
-
-#### 可选参数
-您可以像这样将下列可选参数传递给 Docker `docker run -e "<parameter>=value" -e ...`. 
-
-- `IMAGE_NAME` 默认的固件文件名是`nodemcu_float|integer_<branch>_<timestamp>.bin`。如果您定义了图片名称，则会替换`<branch>_<timestamp>` 后缀，并且完整的图片名称会变成`nodemcu_float|integer_<image_name>.bin`。
-- `INTEGER_ONLY` 如果您不需要支持浮动支持的 NodeMCU，则将其设置为 1，将构建时间减半。
-- `FLOAT_ONLY` 如果您只需要支持浮动支持的 NodeMCU，则将其设置为 1，将构建时间减半。
-- `TZ` 默认情况下，Docker 容器将以 UTC 时区运行。因此默认镜像名称（参见 `IMAGE_NAME` 上面的选项）的时间戳中的时间，不会与主机系统时间相同。要解决此问题，您可以将 `TZ` 参数设置为任何[有效的时区名称](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) 例如 `-e TZ=Asia/Shanghai`。
-
-
-
-### 下载固件
-使用固件 [下载工具](http://nodemcu.readthedocs.org/en/dev/en/flash/) 可以下载固件到 ESP8266。例如你使用 [esptool](https://github.com/themadinventor/esptool)（我喜欢这样用）可以运行如下命令下载固件:
+### ‼️ 如果你以前拉取过 docker 镜像(例如根据上面的命令)，你应该经常更新镜像，以获得最新的错误修复:
 ```
-esptool.py --port <USB-port-with-ESP8266> write_flash 0x00000 <NodeMCU-firmware-directory>/bin/nodemcu_[integer|float]_<Git-branch>.bin
+docker pull marcelstoer/nodemcu-build
 ```
 
 ## 支持
@@ -75,7 +67,8 @@ esptool.py --port <USB-port-with-ESP8266> write_flash 0x00000 <NodeMCU-firmware-
 对于错误和改进建议，可以在这里提出问题 [https://github.com/marcelstoer/docker-nodemcu-build/issues](https://github.com/marcelstoer/docker-nodemcu-build/issues)
 
 ## 贡献
-感谢 [Paul Sokolovsky](http://pfalcon-oe.blogspot.com/) 创建并维护 [esp-open-sdk](https://github.com/pfalcon/esp-open-sdk)。
+感谢 [Paul Sokolovsky](http://pfalcon-oe.blogspot.com/) 创建并维护 [esp-open-sdk](https://github.com/pfalcon/esp-open-sdk)。  
+把更多的感谢给  [Paul Sokolovsky](http://pfalcon-oe.blogspot.com/) ，他实现了 LFS 支持，并删除了此镜像的设计不良的 `INTEGER_ONLY` / `FLOAT_ONLY` 参数。
 
 ## 作者
 [http://frightanic.com](http://frightanic.com)
