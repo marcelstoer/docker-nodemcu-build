@@ -8,7 +8,7 @@ MAINTAINER marcelstoer
 # - vim docker-nodemcu-build/Dockerfile
 # - docker build -t docker-nodemcu-build docker-nodemcu-build
 # - cd <nodemcu-firmware>
-# - docker run --rm -ti -v `pwd`:/opt/nodemcu-firmware docker-nodemcu-build
+# - docker run --rm -ti -v `pwd`:/opt/nodemcu-firmware docker-nodemcu-build build
 
 RUN apt-get update && apt-get install -y wget unzip git make python-serial srecord bc xz-utils gcc ccache tzdata
 # Release some space...

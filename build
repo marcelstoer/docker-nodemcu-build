@@ -49,21 +49,25 @@ else
   true
 fi
 
-# unpack esp-open-sdk.tar.gz into a directory that is NOT the bound mount directory (i.e. inside the Docker image)
-export HOME=/tmp/esp
-rm -rf ${HOME}
-mkdir ${HOME}
+if [ -f tools/esp-open-sdk.tar.xz ] || [ -f tools/esp-open-sdk.tar.gz ]; then
+  # unpack esp-open-sdk.tar.* into a directory that is NOT the bound mount directory (i.e. inside the Docker image)
+  export HOME=/tmp/esp
+  rm -rf ${HOME}
+  mkdir ${HOME}
 
-cp tools/esp-open-sdk.tar.* ${HOME}
-cd ${HOME}
-# support older build chains (before we re-packaged it)
-if [ -f ./esp-open-sdk.tar.xz ]; then
-  tar -Jxvf esp-open-sdk.tar.xz
-else
-  tar -zxvf esp-open-sdk.tar.gz
+  cp tools/esp-open-sdk.tar.* ${HOME}
+  cd ${HOME}
+  # support older build chains (before we re-packaged it)
+  if [ -f ./esp-open-sdk.tar.xz ]; then
+    tar -Jxvf esp-open-sdk.tar.xz
+  else
+    tar -zxvf esp-open-sdk.tar.gz
+  fi
+
+  export PATH=$PATH:$PWD/esp-open-sdk/sdk:$PWD/esp-open-sdk/xtensa-lx106-elf/bin
 fi
 
-export PATH=$PATH:$PWD/esp-open-sdk/sdk:$PWD/esp-open-sdk/xtensa-lx106-elf/bin
+
 export CCACHE_DIR=/opt/nodemcu-firmware/.ccache
 
 cd /opt/nodemcu-firmware
