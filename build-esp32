@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Config options you may pass via Docker like so 'docker run -e "<option>=<value>"':
+# - IMAGE_NAME=<name>, define a static name for your .bin files
+
+cd /opt/nodemcu-firmware
+
+export BUILD_DATE COMMIT_ID BRANCH SSL MODULES
+BUILD_DATE="$(date "+%Y-%m-%d %H:%M")"
+COMMIT_ID="$(git rev-parse HEAD)"
+BRANCH="$(git rev-parse --abbrev-ref HEAD | sed -r 's/[\/\\]+/_/g')"
+
+# use the Git branch and the current time stamp to define image name if IMAGE_NAME not set
+if [ -z "$IMAGE_NAME" ]; then
+  IMAGE_NAME=${BRANCH}_"$(date "+%Y%m%d-%H%M")"
+else
+  true
+fi
+
+# install all required ESP-IDF dependencies
+/usr/bin/python -m pip install --user -r /opt/nodemcu-firmware/sdk/esp32-esp-idf/requirements.txt
+
+# run the build
+make MORE_CFLAGS="-DBUILD_DATE='\"'$BUILD_DATE'\"'"
+
+# package the 3 binaries into a single .bin for 0x0000
+# 0x1000 bootloader.bin
+# 0x8000 partitions_singleapp.bin
+# 0x10000 NodeMCU.bin
+srec_cat -output nodemcu_"${IMAGE_NAME}".bin -binary '(' -generate 0x0000 0x1000 -constant 0xff ')' '(' build/bootloader/bootloader.bin -binary -offset 0x1000 -fill 0xff 0x1000 0x8000 ')' '(' build/partitions_singleapp.bin -binary -offset 0x8000 -fill 0xff 0x8000 0x10000 ')' '(' build/NodeMCU.bin -binary -offset 0x10000 ')'
+

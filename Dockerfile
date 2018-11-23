@@ -34,6 +34,8 @@ ENV PATH="/opt:${PATH}"
 COPY cmd.sh /opt/
 COPY read.me /opt/
 COPY build /opt/
+COPY build-esp32 /opt/
+COPY build-esp8266 /opt/
 COPY lfs-image /opt/
 
 CMD /opt/cmd.sh
