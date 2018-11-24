@@ -29,5 +29,6 @@ make MORE_CFLAGS="-DBUILD_DATE='\"'$BUILD_DATE'\"'"
 # 0x1000 bootloader.bin
 # 0x8000 partitions_singleapp.bin
 # 0x10000 NodeMCU.bin
-srec_cat -output nodemcu_"${IMAGE_NAME}".bin -binary '(' -generate 0x0000 0x1000 -constant 0xff ')' '(' build/bootloader/bootloader.bin -binary -offset 0x1000 -fill 0xff 0x1000 0x8000 ')' '(' build/partitions_singleapp.bin -binary -offset 0x8000 -fill 0xff 0x8000 0x10000 ')' '(' build/NodeMCU.bin -binary -offset 0x10000 ')'
+# current command is a simplification of the one proposed at https://github.com/marcelstoer/docker-nodemcu-build/issues/55#issuecomment-440830227
+srec_cat -output nodemcu_"${IMAGE_NAME}".bin -binary build/bootloader/bootloader.bin -binary -offset 0x1000 -fill 0xff 0x0000 0x8000 build/partitions_singleapp.bin -binary -offset 0x8000 -fill 0xff 0x8000 0x10000 build/NodeMCU.bin -binary -offset 0x10000
 
