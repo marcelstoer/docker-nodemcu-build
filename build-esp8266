@@ -8,6 +8,8 @@ set -e
 
 cd /opt/nodemcu-firmware
 
+version_file=app/include/user_version.h
+
 export BUILD_DATE COMMIT_ID BRANCH SSL MODULES
 BUILD_DATE="$(date "+%Y-%m-%d %H:%M")"
 COMMIT_ID="$(git rev-parse HEAD)"
@@ -38,7 +40,7 @@ fi
 
 # check whether the user made changes to the version file, if so then assume she wants to use a custom version rather
 # than the one that would be set here -> we can't modify it
-if git diff -b --quiet app/include/user_version.h; then
+if git diff -b --quiet "$version_file"; then
     CAN_MODIFY_VERSION=true
 else
     CAN_MODIFY_VERSION=false
@@ -79,10 +81,10 @@ cd /opt/nodemcu-firmware
 # I never found a good solution
 if [ "$CAN_MODIFY_VERSION" = true ]; then
   MODULES=$(awk '/^[ \t]*#define LUA_USE_MODULES/{modules=modules sep tolower(substr($2,17));sep=","}END{if(length(modules)==0)modules="-";print modules}' app/include/user_modules.h | tr -d '\r')
-  # remove windows lineends first as they interfere with linened matching below
-  sed -i 's/\r//g' app/include/user_version.h
-  sed -i '/#define NODE_VERSION[[:space:]]/ s/$/ " built with Docker provided by frightanic.com\\n\\tbranch: '"$BRANCH"'\\n\\tcommit: '"$COMMIT_ID"'\\n\\tSSL: '"$SSL"'\\n\\tBuild type: '"$BUILD_TYPE"'\\n\\tLFS: '"$LFS"'\\n\\tmodules: '"$MODULES"'\\n"/g' app/include/user_version.h
-  sed -i 's/"unspecified"/"created on '"$BUILD_DATE"'\\n"/g' app/include/user_version.h
+  # remove windows line ends first as they interfere with line end matching below
+  sed -i 's/\r//g' "$version_file"
+  sed -i '/#define NODE_VERSION[[:space:]]/ s/$/ " built with Docker provided by frightanic.com\\n\\tbranch: '"$BRANCH"'\\n\\tcommit: '"$COMMIT_ID"'\\n\\tSSL: '"$SSL"'\\n\\tBuild type: '"$BUILD_TYPE"'\\n\\tLFS: '"$LFS"'\\n\\tmodules: '"$MODULES"'\\n"/g' "$version_file"
+  sed -i 's/"unspecified"/"created on '"$BUILD_DATE"'\\n"/g' "$version_file"
 fi
 
 # build
@@ -96,5 +98,5 @@ cd ../
 
 # revert the changes made to the version params
 if [ "$CAN_MODIFY_VERSION" = true ]; then
-  git checkout app/include/user_version.h
+  git checkout "$version_file"
 fi
