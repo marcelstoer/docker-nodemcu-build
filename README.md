@@ -104,7 +104,7 @@ This internally will run `make menuconfig` in the firmware directory. It will ge
 
 That is the exact same command as for building for the ESP8266. It uses Git to figure out whether you checked out NodeMCU for ESP32 or ESP8266. The `build` command is thus a shortcut to using `build-esp32`.
 
-The process will fairly early with a meaningful error message if it does not find a `sdkconfig` file in the firmware directory.
+The process will fail early with a meaningful error message if it does not find a `sdkconfig` file in the firmware directory.
 
 ## Options
 You can pass the following optional parameters to the Docker build like so `docker run -e "<parameter>=value" -e ...`. 
