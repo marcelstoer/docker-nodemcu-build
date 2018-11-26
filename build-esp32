@@ -7,6 +7,11 @@ set -e
 
 cd /opt/nodemcu-firmware
 
+if [ ! -f sdkconfig ]; then
+    echo ERROR: '`sdkconfig`' file missing or not accessible, run the '`configure-esp32`' command first
+    exit 1 # terminate and indicate error
+fi
+
 version_file=components/platform/include/user_version.h
 lua_header_file=components/lua/lua.h
 
