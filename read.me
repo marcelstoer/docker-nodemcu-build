@@ -1,11 +1,11 @@
 
 Welcome to the Docker image to build NodeMCU firmware and LFS images.
 
-To build the firmware or an LFS image you need to add the respective command 
+To build the firmware or an LFS image you need to add the respective command
 to the line you just used.
-Say you used 
+Say you used
 
-  docker run --rm -it -v C:/Users/ ... nodemcu-firmware:/opt/nodemcu-firmware marcelstoer/nodemcu-build  
+  docker run --rm -it -v C:/Users/ ... nodemcu-firmware:/opt/nodemcu-firmware marcelstoer/nodemcu-build
 
 now use
 
@@ -13,13 +13,15 @@ now use
 
 Following commands are available:
 
-build        builds your firmware
+build           builds your firmware, either for ESP32 or for ESP8266
 
-lfs-image    create an LFS image
-             To do this you must tell docker where your lua files are stored.
-             Add another '-v c:/lua_location:opt/lua' to the commandline.
-             All lua files stored in that location will be added recursively 
-             to the LFS image.
+configure-esp32 start the SDK configuration for ESP32
+
+lfs-image       create an LFS image
+                To do this you must tell docker where your lua files are stored.
+                Add another '-v c:/lua_location:opt/lua' to the commandline.
+                All lua files stored in that location will be added recursively
+                to the LFS image.
 
 For more Information please see https://hub.docker.com/r/marcelstoer/nodemcu-build
 

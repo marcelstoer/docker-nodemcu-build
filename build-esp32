@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Config options you may pass via Docker like so 'docker run -e "<option>=<value>"':
+# - IMAGE_NAME=<name>, define a static name for your .bin files
+
+cd /opt/nodemcu-firmware
+
+if [ ! -f sdkconfig ]; then
+    echo ERROR: '`sdkconfig`' file missing or not accessible, run the '`configure-esp32`' command first
+    exit 1 # terminate and indicate error
+fi
+
+version_file=components/platform/include/user_version.h
+lua_header_file=components/lua/lua.h
+
+export BUILD_DATE COMMIT_ID BRANCH SSL MODULES SDK_VERSION
+BUILD_DATE="$(date "+%Y-%m-%d %H:%M")"
+COMMIT_ID="$(git rev-parse HEAD)"
+BRANCH="$(git rev-parse --abbrev-ref HEAD | sed -r 's/[\/\\]+/_/g')"
+# 7313e39fde0eb0a47a60f31adccd602c82a8d5ad sdk/esp32-esp-idf (v3.2-dev-1239-g7313e39) <- get text between ()
+SDK_VERSION="$(git submodule status|grep esp32|sed -r 's/.*\((.+)\)/\1/')"
+
+# by default SSL is enabled in the ESP-IDF Kconfig
+if grep -q CONFIG_MBEDTLS_TLS_ENABLED=y sdkconfig; then
+    SSL=true
+else
+    SSL=false
+fi
+
+# check whether the user made changes to the version file, if so then assume she wants to use a custom version rather
+# than the one that would be set here -> we can't modify it
+if git diff -b --quiet "$version_file"; then
+  CAN_MODIFY_VERSION=true
+else
+  CAN_MODIFY_VERSION=false
+fi
+
+# use the Git branch and the current time stamp to define image name if IMAGE_NAME not set
+if [ -z "$IMAGE_NAME" ]; then
+  IMAGE_NAME=${BRANCH}_"$(date "+%Y%m%d-%H%M")"
+else
+  true
+fi
+
+# modify user_version.h to provide more info in NodeMCU welcome message
+if [ "$CAN_MODIFY_VERSION" = true ]; then
+  MODULES=$(awk '/^CONFIG_LUA_MODULE_[^=]*=y/{modules=modules sep tolower(substr($1,19));sep=","}END{if(length(modules)==0)modules="-";gsub("=y","",modules);print modules}' sdkconfig)
+  # remove windows line ends first as they interfere with line end matching below
+  sed -i 's/\r//g' "$version_file"
+  sed -i '/#define NODE_VERSION[[:space:]]/ s/$/ " built with Docker provided by frightanic.com\\n\\tbranch: '"$BRANCH"'\\n\\tcommit: '"$COMMIT_ID"'\\n\\tSSL: '"$SSL"'\\n\\tmodules: '"$MODULES"'\\n"/g' "$version_file"
+  sed -i 's/"unspecified"/"created on '"$BUILD_DATE"'\\n"/g' "$version_file"
+fi
+# append " on ESP-IDF xxx" to the Lua version
+sed -i '/#define LUA_RELEASE[[:space:]]/ s/$/ " on ESP-IDF '"$SDK_VERSION"'"/g' "$lua_header_file"
+
+
+# install all required ESP-IDF dependencies
+/usr/bin/python -m pip install --user -r /opt/nodemcu-firmware/sdk/esp32-esp-idf/requirements.txt
+# run the build
+make
+# package the 3 binaries into a single .bin for 0x0000
+# 0x1000 bootloader.bin
+# 0x8000 partitions_singleapp.bin
+# 0x10000 NodeMCU.bin
+# current command is a simplification of the one proposed at https://github.com/marcelstoer/docker-nodemcu-build/issues/55#issuecomment-440830227
+srec_cat -output nodemcu_"${IMAGE_NAME}".bin -binary build/bootloader/bootloader.bin -binary -offset 0x1000 -fill 0xff 0x0000 0x8000 build/partitions_singleapp.bin -binary -offset 0x8000 -fill 0xff 0x8000 0x10000 build/NodeMCU.bin -binary -offset 0x10000
+
+
+# revert the changes made to the version params
+if [ "$CAN_MODIFY_VERSION" = true ]; then
+  git checkout "$version_file"
+fi
+git checkout "$lua_header_file"

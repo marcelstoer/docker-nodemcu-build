@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Config options you may pass via Docker like so 'docker run -e "<option>=<value>"':
+# - IMAGE_NAME=<name>, define a static name for your .bin files
+# - configure #define LUA_NUMBER_INTEGRAL in app/include/user_config.h for INTEGER/FLOAT firmware builds.
+
+cd /opt/nodemcu-firmware
+
+version_file=app/include/user_version.h
+
+export BUILD_DATE COMMIT_ID BRANCH SSL MODULES
+BUILD_DATE="$(date "+%Y-%m-%d %H:%M")"
+COMMIT_ID="$(git rev-parse HEAD)"
+BRANCH="$(git rev-parse --abbrev-ref HEAD | sed -r 's/[\/\\]+/_/g')"
+
+# figure out whether SSL is enabled in user_config.h
+if grep -Eq "^#define CLIENT_SSL_ENABLE" app/include/user_config.h; then
+    SSL="true"
+  else
+    SSL="false"
+  fi
+
+# figure out whether LFS configuration in user_config.h
+LFS=$(grep "^#define LUA_FLASH_STORE" app/include/user_config.h | tr -d '\r' | cut -d ' ' -f 3-)
+if [ -z "$LFS" ]; then
+    LFS="disabled"
+else
+    LFS="Size: ${LFS}"
+  fi
+
+# figure out whether Int build is enabled in user_config.h
+if grep -Eq "^#define LUA_NUMBER_INTEGRAL" app/include/user_config.h; then
+  BUILD_TYPE=integer
+else
+  BUILD_TYPE=float
+fi
+
+
+# check whether the user made changes to the version file, if so then assume she wants to use a custom version rather
+# than the one that would be set here -> we can't modify it
+if git diff -b --quiet "$version_file"; then
+    CAN_MODIFY_VERSION=true
+else
+    CAN_MODIFY_VERSION=false
+fi
+
+# use the Git branch and the current time stamp to define image name if IMAGE_NAME not set
+if [ -z "$IMAGE_NAME" ]; then
+  IMAGE_NAME=${BRANCH}_"$(date "+%Y%m%d-%H%M")"
+else
+  true
+fi
+
+if [ -f tools/esp-open-sdk.tar.xz ] || [ -f tools/esp-open-sdk.tar.gz ]; then
+  # unpack esp-open-sdk.tar.* into a directory that is NOT the bound mount directory (i.e. inside the Docker image)
+  export HOME=/tmp/esp
+  rm -rf ${HOME}
+  mkdir ${HOME}
+
+  cp tools/esp-open-sdk.tar.* ${HOME}
+  cd ${HOME}
+  # support older build chains (before we re-packaged it)
+  if [ -f ./esp-open-sdk.tar.xz ]; then
+    tar -Jxvf esp-open-sdk.tar.xz
+  else
+    tar -zxvf esp-open-sdk.tar.gz
+  fi
+
+  export PATH=$PATH:$PWD/esp-open-sdk/sdk:$PWD/esp-open-sdk/xtensa-lx106-elf/bin
+fi
+
+
+export CCACHE_DIR=/opt/nodemcu-firmware/.ccache
+
+cd /opt/nodemcu-firmware
+
+# modify user_version.h to provide more info in NodeMCU welcome message, doing this by passing
+# EXTRA_CCFLAGS="-DBUILD_DATE=... AND -DNODE_VERSION=..." to make turned into an escaping/expanding nightmare for which
+# I never found a good solution
+if [ "$CAN_MODIFY_VERSION" = true ]; then
+  MODULES=$(awk '/^[ \t]*#define LUA_USE_MODULES/{modules=modules sep tolower(substr($2,17));sep=","}END{if(length(modules)==0)modules="-";print modules}' app/include/user_modules.h | tr -d '\r')
+  # remove windows line ends first as they interfere with line end matching below
+  sed -i 's/\r//g' "$version_file"
+  sed -i '/#define NODE_VERSION[[:space:]]/ s/$/ " built with Docker provided by frightanic.com\\n\\tbranch: '"$BRANCH"'\\n\\tcommit: '"$COMMIT_ID"'\\n\\tSSL: '"$SSL"'\\n\\tBuild type: '"$BUILD_TYPE"'\\n\\tLFS: '"$LFS"'\\n\\tmodules: '"$MODULES"'\\n"/g' "$version_file"
+  sed -i 's/"unspecified"/"created on '"$BUILD_DATE"'\\n"/g' "$version_file"
+fi
+
+# build
+make WRAPCC="$(which ccache)" clean all
+cd bin
+srec_cat -output nodemcu_${BUILD_TYPE}_"${IMAGE_NAME}".bin -binary 0x00000.bin -binary -fill 0xff 0x00000 0x10000 0x10000.bin -binary -offset 0x10000
+# copy and rename the mapfile to bin/
+cp ../app/mapfile nodemcu_${BUILD_TYPE}_"${IMAGE_NAME}".map
+cd ../
+
+
+# revert the changes made to the version params
+if [ "$CAN_MODIFY_VERSION" = true ]; then
+  git checkout "$version_file"
+fi
