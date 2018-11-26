@@ -52,7 +52,14 @@ Follow the instructions at [https://docs.docker.com/get-started/](https://docs.d
 ## Clone the NodeMCU firmware repository
 Docker runs on a VirtualBox VM which by default only shares the user directory from the underlying guest OS. On Windows that is `c:/Users/<user>` and on Mac it's `/Users/<user>`. Hence, you need to clone the  [NodeMCU firmware](https://github.com/nodemcu/nodemcu-firmware) repository to your *user directory*. If you want to place it outside the user directory you need to adjust the [VirtualBox VM sharing settings](http://stackoverflow.com/q/33934776/131929) accordingly.
 
-`git clone https://github.com/nodemcu/nodemcu-firmware.git`
+`git clone --recurse-submodules https://github.com/nodemcu/nodemcu-firmware.git`
+
+For ESP32 you would then switch to the `dev-esp32` branch and update the submodules:
+
+```
+git checkout dev-esp32
+git submodule update --recursive
+```
 
 ## Build for ESP8266
 
