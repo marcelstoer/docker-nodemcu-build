@@ -3,12 +3,9 @@
 set -e
 
 cd /opt/nodemcu-firmware
-BRANCH="$(git rev-parse --abbrev-ref HEAD | sed -r 's/[\/\\]+/_/g')"
 
-cd /opt
-
-case "$BRANCH" in
- dev-esp32) ./build-esp32 ;;
-         *) ./build-esp8266 ;;
-esac
-
+if [ -f sdkconfig.defaults ]; then
+    /opt/build-esp32
+else
+    /opt/build-esp8266
+fi
