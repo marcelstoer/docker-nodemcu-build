@@ -93,11 +93,13 @@ Start Docker and change to the NodeMCU firmware directory (in the Docker console
 This will compile and store all Lua files in the given folder including subfolders.
 
 #### Output
-Depending on what type(s) of firmware you built this will create one or two LFS images in the root of your lua folder.
+Depending on what type(s) of firmware you built this will create one or two LFS images in the root of your Lua folder.
 
 ## Build for ESP32
 
 NodeMCU for ESP32 is built on the [ESP-IDF](https://github.com/espressif/esp-idf) (Espressif IoT Development Framework). It uses a menu-driven user interface Kconfig to configure all firmware features and options. Hence, building NodeMCU for ESP32 is a two step process and you will launch the Docker container twice. First to start Kconfig, select all options and write the configuration file. Then to actually build the firmware.
+
+**Note** make sure you have got the Git submodules loaded as [described above](#clone-the-nodemcu-firmware-repository).
 
 ### Configure modules and features
 
