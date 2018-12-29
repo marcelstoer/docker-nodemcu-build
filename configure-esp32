@@ -4,4 +4,9 @@ set -e
 
 cd /opt/nodemcu-firmware
 
+# checkout submoudles again as Git may insert "wrong" newlines if you checkout submodules on Windows.
+if grep $'\r' .gitmodules > /dev/null; then
+  git submodule foreach --recursive git checkout .
+fi
+
 make menuconfig

@@ -2,6 +2,9 @@
 build text eol=lf
 cmd.sh text eol=lf
 lfs-image text eol=lf
+build-esp32 text eol=lf
+build-esp8266 text eol=lf
+configure-esp32 text eol=lf
 
 # Declare win dump file that will always have CRLF line endings on checkout.
 read.me text eol=crlf

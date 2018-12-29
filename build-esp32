@@ -53,6 +53,8 @@ if [ "$CAN_MODIFY_VERSION" = true ]; then
   sed -i 's/"unspecified"/"created on '"$BUILD_DATE"'\\n"/g' "$version_file"
 fi
 # append " on ESP-IDF xxx" to the Lua version
+# remove Windows newlines first as they interfere with the regex matching below
+sed -i 's/\r//g' "$lua_header_file"
 sed -i '/#define LUA_RELEASE[[:space:]]/ s/$/ " on ESP-IDF '"$SDK_VERSION"'"/g' "$lua_header_file"
 
 
