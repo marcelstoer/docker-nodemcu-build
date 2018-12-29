@@ -4,7 +4,7 @@ set -e
 
 cd /opt/nodemcu-firmware
 
-# Basically revert windows lineends. Only needed if checkout is done under windows.
+# checkout submoudles again as Git may insert "wrong" newlines if you checkout submodules on Windows.
 if grep $'\r' .gitmodules > /dev/null; then
   git submodule foreach --recursive git checkout .
 fi
