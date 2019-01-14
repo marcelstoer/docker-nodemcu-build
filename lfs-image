@@ -14,7 +14,19 @@ fi
 
 export BUILD_DATE
 BUILD_DATE="$(date "+%Y%m%d-%H%M")"
-LUA_FILES=$(find ../lua -iname "*.lua")
+
+if [ -z "$1" ]; then
+  cd /opt/lua
+  LUA_FILES=$(find . -iname "*.lua")
+else
+  DIR=$(dirname $1)/
+  NAME=$(basename $1)
+
+  cd /opt/lua/${DIR}
+
+  LUA_FILES=$(cat ${NAME})
+  LUA_FILES=$(ls ${LUA_FILES})
+fi
 echo Adding files: ${LUA_FILES}
 
 if [ -z "$IMAGE_NAME" ]; then
@@ -22,16 +34,24 @@ if [ -z "$IMAGE_NAME" ]; then
 fi
 
 # make a float LFS image if available
-if [ -x luac.cross ]; then
-  FILENAME=LFS_float_"${IMAGE_NAME}".img
+if [ -x /opt/nodemcu-firmware/luac.cross ]; then
+  FILENAME=${DIR}LFS_float_"${IMAGE_NAME}".img
   echo creating ${FILENAME}
-  find ../lua -iname "*.lua" -exec ./luac.cross -f -o ../lua/"${FILENAME}" {} +
+  if [ -z "$1" ]; then
+    find ../lua -iname "*.lua" -exec /opt/nodemcu-firmware/luac.cross -f -o ../lua/"${FILENAME}" {} +
+  else
+    /opt/nodemcu-firmware/luac.cross -f -o /opt/lua/${FILENAME} ${LUA_FILES}
+  fi
 fi
 
 # make an int LFS image if available
-if [ -x luac.cross.int ]; then
-  FILENAME=LFS_integer_"${IMAGE_NAME}".img
+if [ -x /opt/nodemcu-firmware/luac.cross.int ]; then
+  FILENAME=${DIR}LFS_integer_"${IMAGE_NAME}".img
   echo creating ${FILENAME}
-  find ../lua -iname "*.lua" -exec ./luac.cross.int -f -o ../lua/"${FILENAME}" {} +
+  if [ -z "$1" ]; then
+    find ../lua -iname "*.lua" -exec /opt/nodemcu-firmware/luac.cross.int -f -o ../lua/"${FILENAME}" {} +
+  else
+    /opt/nodemcu-firmware/luac.cross.int -f -o /opt/lua/${FILENAME} ${LUA_FILES}
+  fi
 fi
 

@@ -92,6 +92,33 @@ Start Docker and change to the NodeMCU firmware directory (in the Docker console
 
 This will compile and store all Lua files in the given folder including subfolders.
 
+To only add specific files you can prepare a file containing the files to add and give them as paramater.
+
+``docker run --rm -ti -v `pwd`:/opt/nodemcu-firmware -v {PathToLuaSourceFolder}:/opt/lua marcelstoer/nodemcu-build lfs-image final/files.lst``
+
+Assume the following content of files.lst:
+```
+lib/*.lua    main.lua
+../baseProject/*.lua
+```
+NOTE: use linux path separator '/' instead of Windows type '\'.
+
+Assume the following files inside ``{PathToLuaSourceFolder}`` which is mounted as ``/opt/lua``
+```
+baseProject/base.lua
+baseProject/lib/baseLib.lua
+final/files.lst
+final/lib/lib1.lua
+final/main.lua
+main.lua
+```
+this would add the following files
+```
+baseProject/base.lua
+final/lib/lib1.lua
+final/main.lua
+```
+
 #### Output
 Depending on what type(s) of firmware you built this will create one or two LFS images in the root of your Lua folder.
 
