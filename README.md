@@ -102,6 +102,7 @@ lib/*.lua    main.lua
 ../baseProject/*.lua
 ```
 NOTE: use linux path separator '/' instead of Windows type '\'.
+Basically this is just an ``ls`` expression as long as it contains no spaces and other shell escapable characters.
 
 Assume the following files inside ``{PathToLuaSourceFolder}`` which is mounted as ``/opt/lua``
 ```
