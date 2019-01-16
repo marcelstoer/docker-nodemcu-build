@@ -45,7 +45,7 @@ function make_image {
     FILENAME=${DIR}LFS_${BUILD_TYPE}_"${IMAGE_NAME}".img
     echo creating "${FILENAME}"
     if [ -z "${filelist}" ]; then 
-      find ../lua -iname "*.lua" -exec ${firmware_base}/${COMPILER} -f -o ${lua_base}/"${FILENAME}" {} +
+      find ${lua_base} -iname "*.lua" -exec ${firmware_base}/${COMPILER} -f -o ${lua_base}/"${FILENAME}" {} +
     else
       ${firmware_base}/${COMPILER} -f -o ${lua_base}/"${FILENAME}" ${LUA_FILES}
   fi
