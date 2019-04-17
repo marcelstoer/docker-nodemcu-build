@@ -64,10 +64,10 @@ sed -i '/#define LUA_RELEASE[[:space:]]/ s/$/ " on ESP-IDF '"$SDK_VERSION"'"/g' 
 make
 # package the 3 binaries into a single .bin for 0x0000
 # 0x1000 bootloader.bin
-# 0x8000 partitions_singleapp.bin
+# 0x8000 partitions.bin
 # 0x10000 NodeMCU.bin
 # current command is a simplification of the one proposed at https://github.com/marcelstoer/docker-nodemcu-build/issues/55#issuecomment-440830227
-srec_cat -output nodemcu_"${IMAGE_NAME}".bin -binary build/bootloader/bootloader.bin -binary -offset 0x1000 -fill 0xff 0x0000 0x8000 build/partitions_singleapp.bin -binary -offset 0x8000 -fill 0xff 0x8000 0x10000 build/NodeMCU.bin -binary -offset 0x10000
+srec_cat -output nodemcu_"${IMAGE_NAME}".bin -binary build/bootloader/bootloader.bin -binary -offset 0x1000 -fill 0xff 0x0000 0x8000 build/partitions.bin -binary -offset 0x8000 -fill 0xff 0x8000 0x10000 build/NodeMCU.bin -binary -offset 0x10000
 
 
 # revert the changes made to the version params
