@@ -12,8 +12,8 @@ if [ ! -f sdkconfig ]; then
     exit 1 # terminate and indicate error
 fi
 
-version_file=components/platform/include/user_version.h
-lua_header_file=components/lua/lua.h
+version_file="components/platform/include/user_version.h"
+lua_header_file="components/lua/lua.h"
 
 export BUILD_DATE COMMIT_ID BRANCH SSL MODULES SDK_VERSION
 BUILD_DATE="$(date "+%Y-%m-%d %H:%M")"
