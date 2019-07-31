@@ -1,7 +1,7 @@
 # see https://hub.docker.com/_/ubuntu/ for versions, should be the same as on Travis for NodeMCU CI
 # 16.04 == xenial
 FROM ubuntu:16.04
-MAINTAINER marcelstoer
+LABEL maintainer="marcelstoer"
 
 # If you want to tinker with this Dockerfile on your machine do as follows:
 # - git clone https://github.com/marcelstoer/docker-nodemcu-build
@@ -11,10 +11,12 @@ MAINTAINER marcelstoer
 # - cd <nodemcu-firmware>
 # - docker run --rm -ti -v `pwd`:/opt/nodemcu-firmware docker-nodemcu-build build
 
+# Lint the final file with https://hadolint.github.io/hadolint/
+
 RUN apt-get update && apt-get install -y wget unzip git make python-serial srecord bc xz-utils gcc ccache tzdata
 
 # additionally required for ESP32 builds
-RUN apt-get install -y gperf python-pip
+RUN apt-get install -y gperf python-pip libncurses5-dev libncursesw5-dev flex bison
 RUN pip install --upgrade pip
 
 # Release some space...
@@ -34,4 +36,4 @@ COPY build-esp8266 /opt/
 COPY configure-esp32 /opt/
 COPY lfs-image /opt/
 
-CMD /opt/cmd.sh
+CMD ["/opt/cmd.sh"]
