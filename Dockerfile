@@ -15,8 +15,9 @@ LABEL maintainer="marcelstoer"
 
 RUN apt-get update && apt-get install -y wget unzip git make python-serial srecord bc xz-utils gcc ccache tzdata
 
-# additionally required for ESP32 builds
-RUN apt-get install -y gperf python-pip libncurses5-dev libncursesw5-dev flex bison
+# additionally required for ESP32 builds as per https://nodemcu.readthedocs.io/en/dev-esp32/build/#ubuntu
+RUN apt-get install -y gperf python-pip python-dev flex bison build-essential libssl-dev libffi-dev libncurses5-dev libncursesw5-dev libreadline-dev
+
 RUN pip install --upgrade pip
 
 # Release some space...
