@@ -18,6 +18,7 @@ It can also create LFS images from your Lua sources.
      * [Build the firmware](#build-the-firmware-1)
   * [Options](#options)
   * [Note for Windows users](#note-for-windows-users)
+  * [Note for macOS users](#note-for-macos-users)
 * [Support](#support)
 * [Credits](#credits)
 * [Author](#author)
@@ -162,6 +163,12 @@ If the Windows path contains spaces it would have to be wrapped in quotes as usu
 `docker run --rm -it -v "//c/Users/monster tune/<nodemcu-firmware>":/opt/nodemcu-firmware marcelstoer/nodemcu-build build`
 
 If this Docker container hangs on sharing the drive (or starting) check whether the Windows service 'LanmanServer' is running. See [DockerBug #2196](https://github.com/docker/for-win/issues/2196) for details.
+
+## Note for macOS users
+
+[Docker for Mac is slow](https://markshust.com/2018/01/30/performance-tuning-docker-mac/). Period. However, much of the I/O-related latency can be significantly reduce with tuned volume mounts. Docker for Mac 17.04 introduced a "delegated" flag to avoid keeping host file system and container file system in perfect sync all the time. "delegated" postpones writes back to the host in order to achieve higher filesystem throughput.
+
+So, instead of ``-v `pwd`:/opt/nodemcu-firmware`` you would say ``-v `pwd`:/opt/nodemcu-firmware:delegated`` (note the flag at the end).
 
 # Support
 Ask a question on [StackOverflow](http://stackoverflow.com/) and assign the `nodemcu` and `docker` tags.
