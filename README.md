@@ -166,7 +166,7 @@ If this Docker container hangs on sharing the drive (or starting) check whether 
 
 ## Note for macOS users
 
-[Docker for Mac is slow](https://markshust.com/2018/01/30/performance-tuning-docker-mac/). Period. However, much of the I/O-related latency can be significantly reduce with tuned volume mounts. Docker for Mac 17.04 introduced a "delegated" flag to avoid keeping host file system and container file system in perfect sync all the time. "delegated" postpones writes back to the host in order to achieve higher filesystem throughput.
+[Docker for Mac is slow](https://markshust.com/2018/01/30/performance-tuning-docker-mac/). Period. However, much of the I/O-related latency can be significantly reduced with tuned volume mounts. Docker for Mac 17.04 introduced a "delegated" flag to avoid keeping host file system and container file system in perfect sync all the time. "delegated" postpones writing back changes in the container to the host in order to achieve higher filesystem throughput.
 
 So, instead of ``-v `pwd`:/opt/nodemcu-firmware`` you would say ``-v `pwd`:/opt/nodemcu-firmware:delegated`` (note the flag at the end).
 
