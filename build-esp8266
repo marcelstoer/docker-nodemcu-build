@@ -8,6 +8,8 @@ set -e
 
 cd /opt/nodemcu-firmware
 
+export USER_PROLOG="built with Docker provided by frightanic.com"
+
 version_file=app/include/user_version.h
 
 export BUILD_DATE COMMIT_ID BRANCH SSL MODULES
@@ -76,10 +78,12 @@ export CCACHE_DIR=/opt/nodemcu-firmware/.ccache
 
 cd /opt/nodemcu-firmware
 
-# modify user_version.h to provide more info in NodeMCU welcome message, doing this by passing
-# EXTRA_CCFLAGS="-DBUILD_DATE=... AND -DNODE_VERSION=..." to make turned into an escaping/expanding nightmare for which
-# I never found a good solution
-if [ "$CAN_MODIFY_VERSION" = true ]; then
+# Modify user_version.h to provide more info in NodeMCU welcome message. However, in newer NodeMCU versions this is no
+# longer necessary thanks to https://github.com/nodemcu/nodemcu-firmware/pull/2830. Therefore, only touch the file if
+# tools/update_buildinfo.sh doesn't exist.
+# Doing this by passing EXTRA_CCFLAGS="-DBUILD_DATE=... AND -DNODE_VERSION=..." to make turned into an 
+# escaping/expanding nightmare for which I never found a good solution.
+if [ "$CAN_MODIFY_VERSION" = true ] && [ ! -f tools/update_buildinfo.sh ]; then
   MODULES=$(awk '/^[ \t]*#define LUA_USE_MODULES/{modules=modules sep tolower(substr($2,17));sep=","}END{if(length(modules)==0)modules="-";print modules}' app/include/user_modules.h | tr -d '\r')
   # remove windows line ends first as they interfere with line end matching below
   sed -i 's/\r//g' "$version_file"
