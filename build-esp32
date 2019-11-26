@@ -19,8 +19,15 @@ export BUILD_DATE COMMIT_ID BRANCH SSL MODULES SDK_VERSION
 BUILD_DATE="$(date "+%Y-%m-%d %H:%M")"
 COMMIT_ID="$(git rev-parse HEAD)"
 BRANCH="$(git rev-parse --abbrev-ref HEAD | sed -r 's/[\/\\]+/_/g')"
-# 7313e39fde0eb0a47a60f31adccd602c82a8d5ad sdk/esp32-esp-idf (v3.2-dev-1239-g7313e39) <- get text between ()
+# 'git submodule status' -> 7313e39fde0eb0a47a60f31adccd602c82a8d5ad sdk/esp32-esp-idf (v3.2-dev-1239-g7313e39)
+# -> get text between ()
 SDK_VERSION="$(git submodule status|grep esp32|sed -r 's/.*\((.+)\)/\1/')"
+# If the submodule isn't linked to a released/tagged version the above commands would set SDK_VERSION to
+# "7313e39fde0eb0a47a60f31adccd602c82a8d5ad sdk/esp32-esp-idf" (w/o the quotes). 
+# -> check and get the short Git revion hash instead
+if [ ${#SDK_VERSION} -ge 40 ]; then SDK_VERSION=${SDK_VERSION:0:7}; fi
+# If it's still empty then set it to a dummy to ensure further operations don't fail.
+if [ -z "$SDK_VERSION" ]; then SDK_VERSION="n/a"; fi
 
 # by default SSL is enabled in the ESP-IDF Kconfig
 if grep -q CONFIG_MBEDTLS_TLS_ENABLED=y sdkconfig; then
