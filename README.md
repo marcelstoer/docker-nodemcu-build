@@ -154,13 +154,13 @@ You can pass the following optional parameters to the Docker build like so `dock
 
 ## Note for Windows users
 
-(Docker on) Windows handles paths slightly differently. You need to specify the full path to the NodeMCU firmware directory in the command and you need to add an extra forward slash (`/`) to the Windows path. The command thus becomes (`c` equals C drive i.e. `c:`):
+(Docker on) Windows handles paths slightly differently. You need to specify the full path to the NodeMCU firmware directory in the command:
 
-`docker run --rm -it -v //c/Users/<user>/<nodemcu-firmware>:/opt/nodemcu-firmware marcelstoer/nodemcu-build build`
+`docker run --rm -it -v c:/Users/<user>/<nodemcu-firmware>:/opt/nodemcu-firmware marcelstoer/nodemcu-build build`
 
 If the Windows path contains spaces it would have to be wrapped in quotes as usual on Windows.
 
-`docker run --rm -it -v "//c/Users/monster tune/<nodemcu-firmware>":/opt/nodemcu-firmware marcelstoer/nodemcu-build build`
+`docker run --rm -it -v "c:/Users/monster tune/<nodemcu-firmware>":/opt/nodemcu-firmware marcelstoer/nodemcu-build build`
 
 If this Docker container hangs on sharing the drive (or starting) check whether the Windows service 'LanmanServer' is running. See [DockerBug #2196](https://github.com/docker/for-win/issues/2196) for details.
 
