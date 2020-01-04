@@ -81,7 +81,7 @@ cd /opt/nodemcu-firmware
 # Modify user_version.h to provide more info in NodeMCU welcome message. However, in newer NodeMCU versions this is no
 # longer necessary thanks to https://github.com/nodemcu/nodemcu-firmware/pull/2830. Therefore, only touch the file if
 # tools/update_buildinfo.sh doesn't exist.
-# Doing this by passing EXTRA_CCFLAGS="-DBUILD_DATE=... AND -DNODE_VERSION=..." to make turned into an 
+# Doing this by passing EXTRA_CCFLAGS="-DBUILD_DATE=... AND -DNODE_VERSION=..." to make turned into an
 # escaping/expanding nightmare for which I never found a good solution.
 if [ "$CAN_MODIFY_VERSION" = true ] && [ ! -f tools/update_buildinfo.sh ]; then
   MODULES=$(awk '/^[ \t]*#define LUA_USE_MODULES/{modules=modules sep tolower(substr($2,17));sep=","}END{if(length(modules)==0)modules="-";print modules}' app/include/user_modules.h | tr -d '\r')
@@ -91,8 +91,14 @@ if [ "$CAN_MODIFY_VERSION" = true ] && [ ! -f tools/update_buildinfo.sh ]; then
   sed -i 's/"unspecified"/"created on '"$BUILD_DATE"'\\n"/g' "$version_file"
 fi
 
+
+# Determine build targets
+if [ -z "$BUILD_MAKE_TARGETS" ]; then BUILD_MAKE_TARGETS='clean all'; fi
+# Put other config mechanisms here to overwrite them (e.g. with CLI args)
+
+
 # build
-make WRAPCC="$(which ccache)" clean all
+make WRAPCC="$(which ccache)" $BUILD_MAKE_TARGETS
 cd bin
 srec_cat -output nodemcu_${BUILD_TYPE}_"${IMAGE_NAME}".bin -binary 0x00000.bin -binary -fill 0xff 0x00000 0x10000 0x10000.bin -binary -offset 0x10000
 # copy and rename the mapfile to bin/

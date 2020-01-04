@@ -147,6 +147,7 @@ The process will fail early with a meaningful error message if it does not find 
 ## Options
 You can pass the following optional parameters to the Docker build like so `docker run -e "<parameter>=value" -e ...`. 
 
+- `BUILD_MAKE_TARGETS` A space-separated list of custom make targets to build, instead of the default ones.
 - `IMAGE_NAME` The default firmware file names are `nodemcu_float|integer_<branch>_<timestamp>.bin` (no integer/float for ESP32). If you define an image name it replaces the `<branch>_<timestamp>` suffix and the full image names become `nodemcu_float|integer_<image_name>.bin`.
 - `TZ` By default the Docker container will run in UTC timezone. Hence, the time in the timestamp of the default image name (see `IMAGE_NAME` option above) will not be same as your host system time - unless that is UTC as well of course. To fix this you can set the `TZ` parameter to any [valid timezone name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) e.g. `-e TZ=Asia/Kolkata`.
 
