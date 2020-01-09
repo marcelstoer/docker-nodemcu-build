@@ -13,15 +13,15 @@ LABEL maintainer="marcelstoer"
 
 # Lint the final file with https://hadolint.github.io/hadolint/
 
-RUN apt-get update && apt-get install -y wget unzip git make python-serial srecord bc xz-utils gcc ccache tzdata
+# Deleting apt-get lists is done at the very end
+# hadolint ignore=DL3009
+RUN apt-get update && apt-get install -y --no-install-recommends wget unzip git make python-serial srecord bc xz-utils gcc ccache tzdata
 
 # additionally required for ESP32 builds as per https://nodemcu.readthedocs.io/en/dev-esp32/build/#ubuntu
-RUN apt-get install -y gperf python-pip python-dev flex bison build-essential libssl-dev libffi-dev libncurses5-dev libncursesw5-dev libreadline-dev
+RUN apt-get install -y --no-install-recommends gperf python-pip python-dev flex bison build-essential libssl-dev libffi-dev libncurses5-dev libncursesw5-dev libreadline-dev
 
 RUN pip install --upgrade pip
 
-# Release some space...
-RUN rm -rf /var/lib/apt/lists/*
 RUN mkdir /opt/nodemcu-firmware
 WORKDIR /opt/nodemcu-firmware
 
@@ -36,5 +36,9 @@ COPY build-esp32 /opt/
 COPY build-esp8266 /opt/
 COPY configure-esp32 /opt/
 COPY lfs-image /opt/
+
+# Release some space...
+RUN apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
 CMD ["/opt/cmd.sh"]
