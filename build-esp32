@@ -23,7 +23,7 @@ BRANCH="$(git rev-parse --abbrev-ref HEAD | sed -r 's/[\/\\]+/_/g')"
 # -> get text between ()
 SDK_VERSION="$(git submodule status|grep esp32|sed -r 's/.*\((.+)\)/\1/')"
 # If the submodule isn't linked to a released/tagged version the above commands would set SDK_VERSION to
-# "7313e39fde0eb0a47a60f31adccd602c82a8d5ad sdk/esp32-esp-idf" (w/o the quotes). 
+# "7313e39fde0eb0a47a60f31adccd602c82a8d5ad sdk/esp32-esp-idf" (w/o the quotes).
 # -> check and get the short Git revion hash instead
 if [ ${#SDK_VERSION} -ge 40 ]; then SDK_VERSION=${SDK_VERSION:0:7}; fi
 # If it's still empty then set it to a dummy to ensure further operations don't fail.
@@ -65,10 +65,15 @@ sed -i 's/\r//g' "$lua_header_file"
 sed -i '/#define LUA_RELEASE[[:space:]]/ s/$/ " on ESP-IDF '"$SDK_VERSION"'"/g' "$lua_header_file"
 
 
+# Determine build targets
+if [ -z "$BUILD_MAKE_TARGETS" ]; then BUILD_MAKE_TARGETS='all'; fi
+# Put other config mechanisms here to overwrite them (e.g. with CLI args)
+
+
 # install all required ESP-IDF dependencies
 /usr/bin/python -m pip install --user -r /opt/nodemcu-firmware/sdk/esp32-esp-idf/requirements.txt
 # run the build
-make
+make $BUILD_MAKE_TARGETS
 # package the 3 binaries into a single .bin for 0x0000
 # 0x1000 bootloader.bin
 # 0x8000 partitions.bin
