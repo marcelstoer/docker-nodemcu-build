@@ -15,7 +15,7 @@ LABEL maintainer="marcelstoer"
 
 # Deleting apt-get lists is done at the very end
 # hadolint ignore=DL3009
-RUN apt-get update && apt-get install -y --no-install-recommends wget unzip git make python-serial srecord bc xz-utils gcc ccache tzdata
+RUN apt-get update && apt-get install -y --no-install-recommends wget unzip git make python-serial srecord bc xz-utils gcc ccache tzdata vim-tiny
 
 # additionally required for ESP32 builds as per https://nodemcu.readthedocs.io/en/dev-esp32/build/#ubuntu
 RUN apt-get install -y --no-install-recommends gperf python-pip python-dev flex bison build-essential libssl-dev libffi-dev libncurses5-dev libncursesw5-dev libreadline-dev
