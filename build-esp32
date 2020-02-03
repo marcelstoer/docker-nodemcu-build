@@ -69,6 +69,9 @@ sed -i '/#define LUA_RELEASE[[:space:]]/ s/$/ " on ESP-IDF '"$SDK_VERSION"'"/g' 
 if [ -z "$BUILD_MAKE_TARGETS" ]; then BUILD_MAKE_TARGETS='all'; fi
 # Put other config mechanisms here to overwrite them (e.g. with CLI args)
 
+# Install setuptools explicitly before installing the ESP-IDF dependencies.
+# See https://github.com/marcelstoer/docker-nodemcu-build/issues/86
+/usr/bin/python -m pip install setuptools
 
 # install all required ESP-IDF dependencies
 /usr/bin/python -m pip install --user -r /opt/nodemcu-firmware/sdk/esp32-esp-idf/requirements.txt
