@@ -28,7 +28,7 @@ It can also create LFS images from your Lua sources.
 There seem to be three types of NodeMCU developers:
 
 - NodeMCU "application developers"
-  
+
   They just need a ready-made firmware. I created a [cloud build service](http://nodemcu-build.com/index.php) with a nice UI and configuration options for them.
   However, if they use [LFS](https://nodemcu.readthedocs.io/en/latest/en/lfs/) they might want to build their LFS images as an alternative to [Terry Ellison's online service](https://blog.ellisons.org.uk/article/nodemcu/a-lua-cross-compile-web-service/). **Then this image is right for them!**
 
@@ -37,9 +37,9 @@ There seem to be three types of NodeMCU developers:
   They don't need full control over the complete tool chain and don't want to setup a Linux VM with the build environment. **This image is _exactly_ for them!**
 
 - NodeMCU firmware developers
-  
+
   They commit or contribute to the project on GitHub and need their own full fledged [build environment with the complete tool chain](http://www.esp8266.com/wiki/doku.php?id=toolchain#how_to_setup_a_vm_to_host_your_toolchain). _They still might find this Docker image useful._
-  
+
 ### :bangbang: Regular updates
 If you have previously pulled this Docker image then you should update the image from time to time to pull in the latest bug fixes:
 
@@ -81,7 +81,15 @@ Start Docker and change to the NodeMCU firmware directory (in the Docker console
 Depending on the performance of your system it takes 1-3min until the compilation finishes. The first time you run this it takes longer because Docker needs to download the image and create a container.
 
 #### Output
-The firmware binary (integer or float) is created in the `bin` subfolder of your NodeMCU root directory. You will also find a mapfile in the `bin` folder with the same name as the firmware file but with a `.map` ending.
+All outputs will be created in the `bin` subfolder of your NodeMCU repository's root directory. They will be:
+
+* `nodemcu_${BUILD_TYPE}_${IMAGE_NAME}.bin` is the combined firmware image
+  you can flash.
+  `BUILD_TYPE` is `integer` or `float`.
+  For `IMAGE_NAME`, see the [Options](#options) chapter below.
+  * Almost same but with `.map` ending, a mapfile will be saved that contains the relative offsets of functions.
+* `0x00000.bin` will contain just the firmware.
+* `0x10000.bin` will contain the SPIFFS.
 
 #### Flash the firmware
 There are several [tools to flash the firmware](https://nodemcu.readthedocs.io/en/latest/en/flash/) to the ESP8266.
@@ -144,11 +152,17 @@ That is the exact same command as for building for the ESP8266. It analyses the 
 
 The process will fail early with a meaningful error message if it does not find a `sdkconfig` file in the firmware directory.
 
+### Output
+All outputs will be created in the `bin` subfolder of your NodeMCU repository's root directory. They will be:
+
+* `nodemcu_${IMAGE_NAME}.bin` will be the firmware image.
+    For `IMAGE_NAME`, see the [Options](#options) chapter below.
+
 ## Options
-You can pass the following optional parameters to the Docker build like so `docker run -e "<parameter>=value" -e ...`. 
+You can pass the following optional parameters to the Docker build like so `docker run -e "<parameter>=value" -e ...`.
 
 - `BUILD_MAKE_TARGETS` A space-separated list of custom make targets to build, instead of the default ones.
-- `IMAGE_NAME` The default firmware file names are `nodemcu_float|integer_<branch>_<timestamp>.bin` (no integer/float for ESP32). If you define an image name it replaces the `<branch>_<timestamp>` suffix and the full image names become `nodemcu_float|integer_<image_name>.bin`.
+- `IMAGE_NAME` can be set to save the output files (see your platform's "Output" section for above) with fixed names. If it is not set or empty, the branch name and a timestamp will be used.
 - `TZ` By default the Docker container will run in UTC timezone. Hence, the time in the timestamp of the default image name (see `IMAGE_NAME` option above) will not be same as your host system time - unless that is UTC as well of course. To fix this you can set the `TZ` parameter to any [valid timezone name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) e.g. `-e TZ=Asia/Kolkata`.
 
 `INTEGER_ONLY` and `FLOAT_ONLY` are **not supported anymore**. Please configure `LUA_NUMBER_INTEGRAL` in `app/include/user_config.h` as described above.
