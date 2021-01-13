@@ -17,8 +17,11 @@ It can also create LFS images from your Lua sources.
      * [Configure modules and features](#configure-modules-and-features-1)
      * [Build the firmware](#build-the-firmware-1)
   * [Options](#options)
-  * [Note for Windows users](#note-for-windows-users)
-  * [Note for macOS users](#note-for-macos-users)
+  * [Notes for Windows users](#notes-for-windows-users)
+  * [Notes for macOS users](#notes-for-macos-users)
+* [Updating NodeMCU](#updating-nodemcu)
+  * [Starting over](#starting-over)
+  * [Attempt to preserve your changes](#attempt-to-preserve-your-changes)
 * [Support](#support)
 * [Credits](#credits)
 * [Author](#author)
@@ -167,7 +170,7 @@ You can pass the following optional parameters to the Docker build like so `dock
 
 `INTEGER_ONLY` and `FLOAT_ONLY` are **not supported anymore**. Please configure `LUA_NUMBER_INTEGRAL` in `app/include/user_config.h` as described above.
 
-## Note for Windows users
+## Notes for Windows users
 
 (Docker on) Windows handles paths slightly differently. You need to specify the full path to the NodeMCU firmware directory in the command:
 
@@ -179,11 +182,40 @@ If the Windows path contains spaces it would have to be wrapped in quotes as usu
 
 If this Docker container hangs on sharing the drive (or starting) check whether the Windows service 'LanmanServer' is running. See [DockerBug #2196](https://github.com/docker/for-win/issues/2196) for details.
 
-## Note for macOS users
+## Notes for macOS users
 
 [Docker for Mac is slow](https://markshust.com/2018/01/30/performance-tuning-docker-mac/). Period. However, much of the I/O-related latency can be significantly reduced with tuned volume mounts. Docker for Mac 17.04 introduced a "delegated" flag to avoid keeping host file system and container file system in perfect sync all the time. "delegated" postpones writing back changes in the container to the host in order to achieve higher filesystem throughput.
 
 So, instead of ``-v `pwd`:/opt/nodemcu-firmware`` you would say ``-v `pwd`:/opt/nodemcu-firmware:delegated`` (note the flag at the end).
+
+# Updating NodeMCU
+The NodeMCU team hopes that you will want to regularly pull their latest updates into your cloned repository and build
+a new firmware. There is more than one way to skin a cat and thus this chapter has unfortunately-but-intentionally to 
+be brief.
+
+## Starting over
+The simplest process is to discard your local changes, update the firmware, and then manually reapply them. That may
+be appropriate if all you changed are a handful of settings in the `.h` files.
+```
+git reset --hard origin/<name-of-the-branch-you-work-with>
+git submodule update --recursive
+```
+Afterwards you would manually re-edit the files and run Docker again.
+
+## Attempt to preserve your changes
+Git is extremely flexible and powerful. What process you follow is very often just a matter of taste. In any case,
+unless you are familiar with Git-fu the least you want to be dealing with is conflict resolution on the command line (
+both you and NodeMCU updated the same file => potential conflict).
+
+One way to _attempt_ to preserve your changes is using [`git stash`](https://www.atlassian.com/git/tutorials/saving-changes/git-stash). 
+I say "attempt" because you still might end up with conflicts.
+
+```
+git stash
+git pull
+git submodule update --recursive
+git stash pop
+```
 
 # Support
 Ask a question on [StackOverflow](http://stackoverflow.com/) and assign the `nodemcu` and `docker` tags.
