@@ -1,7 +1,9 @@
-# see https://hub.docker.com/_/ubuntu/ for versions, should be the same as on Travis for NodeMCU CI
-# 16.04 == xenial
-FROM ubuntu:16.04
+# see https://hub.docker.com/_/ubuntu/ for versions, should be the same as on GitHub for NodeMCU CI
+# 22.04 == jammy
+FROM ubuntu:20.04
 LABEL maintainer="marcelstoer"
+
+ARG DEBIAN_FRONTEND=noninteractive
 
 # If you want to tinker with this Dockerfile on your machine do as follows:
 # - git clone https://github.com/marcelstoer/docker-nodemcu-build
@@ -15,10 +17,13 @@ LABEL maintainer="marcelstoer"
 
 # Deleting apt-get lists is done at the very end
 # hadolint ignore=DL3009
-RUN apt-get update && apt-get install -y --no-install-recommends wget unzip git make python-serial srecord bc xz-utils gcc ccache tzdata vim-tiny
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python-is-python3 wget unzip git make python3-serial srecord bc xz-utils gcc ccache tzdata vim-tiny
 
-# additionally required for ESP32 builds as per https://nodemcu.readthedocs.io/en/dev-esp32/build/#ubuntu
-RUN apt-get install -y --no-install-recommends gperf python-pip python-dev flex bison build-essential libssl-dev libffi-dev libncurses5-dev libncursesw5-dev libreadline-dev
+# additionally required for ESP32 builds as per
+# https://nodemcu.readthedocs.io/en/dev-esp32/build/#ubuntu
+# and
+# https://docs.espressif.com/projects/esp-idf/en/release-v4.4/esp32/get-started/linux-setup.html#install-prerequisites
+RUN apt-get install -y --no-install-recommends flex bison gperf python3-pip python3-dev python3-setuptools cmake ninja-build ccache build-essential libffi-dev libssl-dev dfu-util libncurses5-dev libncursesw5-dev libreadline-dev libusb-1.0-0
 
 RUN pip install --upgrade pip
 
